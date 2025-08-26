@@ -1,0 +1,512 @@
+/* Reset and base styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f8f9fa;
+    padding: 0;
+}
+
+.donation-widget {
+    max-width: 480px;
+    margin: 24px auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    border: 1px solid #e1e5e9;
+}
+
+/* Header */
+.widget-header {
+    background: #1a73e8;
+    color: white;
+    padding: 24px 24px 20px;
+    text-align: center;
+}
+
+.widget-header h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    letter-spacing: -0.5px;
+}
+
+.widget-header p {
+    font-size: 15px;
+    opacity: 0.9;
+    font-weight: 400;
+}
+
+/* Form sections */
+form {
+    padding: 30px;
+}
+
+.amount-section,
+.donation-type-section,
+.processing-fee-section,
+.donor-info-section,
+.payment-section,
+.total-section {
+    margin-bottom: 30px;
+}
+
+.amount-section:last-child,
+.donation-type-section:last-child,
+.processing-fee-section:last-child,
+.donor-info-section:last-child,
+.payment-section:last-child,
+.total-section:last-child {
+    margin-bottom: 0;
+}
+
+h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #1f2937;
+}
+
+/* Amount selection */
+.amount-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.amount-btn {
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 15px 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #374151;
+}
+
+.amount-btn:hover {
+    border-color: #3b82f6;
+    background-color: #f8faff;
+}
+
+.amount-btn.selected {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+    color: white;
+}
+
+.custom-amount {
+    border-top: 1px solid #e5e7eb;
+    padding-top: 20px;
+}
+
+.custom-amount label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #374151;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.dollar-sign {
+    position: absolute;
+    left: 12px;
+    font-weight: 600;
+    color: #6b7280;
+    z-index: 1;
+}
+
+#custom-amount-input {
+    width: 100%;
+    padding: 12px 12px 12px 28px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.2s ease;
+}
+
+#custom-amount-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Radio buttons and checkboxes */
+.type-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.radio-label,
+.checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1.4;
+}
+
+.radio-label input[type="radio"],
+.checkbox-label input[type="checkbox"] {
+    display: none;
+}
+
+.radio-custom,
+.checkbox-custom {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #e5e7eb;
+    margin-right: 12px;
+    margin-top: 2px;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+.radio-custom {
+    border-radius: 50%;
+}
+
+.checkbox-custom {
+    border-radius: 4px;
+}
+
+.radio-label input[type="radio"]:checked + .radio-custom {
+    border-color: #3b82f6;
+    background-color: #3b82f6;
+    background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e");
+}
+
+.checkbox-label input[type="checkbox"]:checked + .checkbox-custom {
+    border-color: #3b82f6;
+    background-color: #3b82f6;
+    background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 20 20' fill='currentColor' xmlns='http://www.w3.org/2000/svg'%3e%3cpath fill-rule='evenodd' d='M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z' clip-rule='evenodd'/%3e%3c/svg%3e");
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: white;
+}
+
+/* Processing fee section */
+.fee-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.fee-amount {
+    font-weight: 600;
+    color: #059669;
+}
+
+.fee-help {
+    font-size: 14px;
+    color: #6b7280;
+    font-style: italic;
+}
+
+/* Form inputs */
+.form-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.form-group {
+    flex: 1;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #374151;
+    font-size: 14px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.2s ease;
+    background: white;
+    cursor: pointer;
+}
+
+.form-group.full-width {
+    flex: 1 1 100%;
+}
+
+/* Stripe Elements */
+.stripe-element {
+    background: white;
+    padding: 12px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    transition: border-color 0.2s ease;
+}
+
+.stripe-element:focus-within {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.StripeElement {
+    background: transparent;
+}
+
+.StripeElement--focus {
+    box-shadow: none;
+}
+
+/* Error messages */
+.error-message {
+    color: #dc2626;
+    font-size: 14px;
+    margin-top: 8px;
+    display: block;
+}
+
+/* Total section */
+.total-breakdown {
+    background: #f8faff;
+    border: 1px solid #e0e7ff;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.breakdown-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+.breakdown-row:last-child {
+    margin-bottom: 0;
+}
+
+.total-row {
+    border-top: 1px solid #e0e7ff;
+    padding-top: 12px;
+    margin-top: 12px;
+    font-weight: 600;
+    font-size: 18px;
+    color: #1f2937;
+}
+
+/* Donate button */
+#donate-button {
+    width: 100%;
+    background: linear-gradient(135deg, #059669, #10b981);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 16px 24px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    position: relative;
+}
+
+#donate-button:hover:not(:disabled) {
+    background: linear-gradient(135deg, #047857, #059669);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+}
+
+#donate-button:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Success message */
+.success-message {
+    padding: 40px 30px;
+    text-align: center;
+    color: #059669;
+}
+
+.success-icon {
+    width: 60px;
+    height: 60px;
+    background: #d1fae5;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 30px;
+    color: #059669;
+}
+
+.success-message h3 {
+    color: #059669;
+    margin-bottom: 10px;
+}
+
+.success-message p {
+    color: #6b7280;
+    font-size: 16px;
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+    
+    .donation-widget {
+        margin: 0;
+    }
+    
+    .widget-header {
+        padding: 25px 20px 20px;
+    }
+    
+    .widget-header h2 {
+        font-size: 24px;
+    }
+    
+    form {
+        padding: 25px 20px;
+    }
+    
+    .amount-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .form-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    h3 {
+        font-size: 16px;
+    }
+}
+
+/* Contribution Rules */
+.contribution-rules {
+    padding: 24px;
+    background: #fafbfc;
+    border-top: 1px solid #e1e5e9;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.contribution-rules h4 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #1f2937;
+}
+
+.contribution-rules ul {
+    margin: 0 0 20px 0;
+    padding-left: 0;
+    list-style: none;
+}
+
+.contribution-rules li {
+    margin-bottom: 8px;
+    padding-left: 20px;
+    position: relative;
+    color: #4b5563;
+    font-size: 13px;
+}
+
+.contribution-rules li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: #1a73e8;
+    font-weight: bold;
+}
+
+.legal-disclaimers {
+    border-top: 1px solid #e1e5e9;
+    padding-top: 16px;
+}
+
+.legal-disclaimers p {
+    margin-bottom: 12px;
+    color: #6b7280;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.legal-disclaimers p:last-child {
+    margin-bottom: 0;
+}
+
+.legal-disclaimers strong {
+    color: #374151;
+    font-weight: 600;
+}
+
+/* Embeddable widget styles */
+.donation-widget.embedded {
+    box-shadow: none;
+    border-radius: 0;
+    max-width: none;
+}
+
+.donation-widget.embedded .widget-header {
+    border-radius: 0;
+}

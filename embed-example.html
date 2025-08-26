@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donation Widget Embed Example</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            margin-bottom: 40px;
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 500px;
+            gap: 40px;
+            align-items: start;
+        }
+        
+        .main-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .main-content h2 {
+            color: #1f2937;
+            margin-bottom: 20px;
+        }
+        
+        .main-content p {
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+        
+        .widget-container {
+            position: sticky;
+            top: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .widget-container {
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <h1>Support Our Campaign</h1>
+            <p>Join us in making a difference for our community</p>
+        </div>
+        
+        <div class="content">
+            <div class="main-content">
+                <h2>Why Your Support Matters</h2>
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                </p>
+                <p>
+                    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                </p>
+                
+                <h2>Our Platform</h2>
+                <p>
+                    Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
+                </p>
+                <p>
+                    Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.
+                </p>
+                
+                <h2>Get Involved</h2>
+                <p>
+                    Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.
+                </p>
+            </div>
+            
+            <div class="widget-container">
+                <!-- This is where the donation widget will be embedded -->
+                <div id="donation-widget-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Configuration for the donation widget -->
+    <script>
+        window.DonationWidgetConfig = {
+            // Replace with your actual widget server URL
+            serverUrl: 'http://localhost:3000',
+            
+            // Replace with your actual Stripe publishable key
+            stripeKey: 'pk_live_51OiPdrGmzdKml1GVUQlswhWIVJUmKToEH7QjhSSsaSRJRpxEPA6gZ8aejZKrFPwnaXm4Gf1khXnUCrATyurWAKux001le4uoqx',
+            
+            // Customize the widget appearance
+            customization: {
+                primaryColor: '#667eea',
+                accentColor: '#059669',
+                title: 'Support Our Campaign',
+                subtitle: 'Every donation makes a difference',
+                variant: 'embedded'
+            },
+            
+            // Callback functions (optional)
+            onSuccess: function(data) {
+                console.log('Donation successful!', data);
+                // You can add custom success tracking here
+                // Example: Google Analytics, Facebook Pixel, etc.
+            },
+            
+            onError: function(error) {
+                console.error('Donation error:', error);
+                // You can add custom error handling here
+            }
+        };
+    </script>
+
+    <!-- Load the donation widget embed script -->
+    <script src="embed/embed.js"></script>
+</body>
+</html>

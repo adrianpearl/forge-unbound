@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donation Widget</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <link rel="stylesheet" href="css/widget.css">
+</head>
+<body>
+    <div class="donation-widget" id="donation-widget">
+        <div class="widget-header">
+            <h2>Make a Donation</h2>
+            <p>Support our campaign</p>
+        </div>
+
+        <form id="donation-form">
+            <!-- Donation Amount Selection -->
+            <div class="amount-section">
+                <h3>Select Amount</h3>
+                <div class="amount-grid">
+                    <button type="button" class="amount-btn" data-amount="25">$25</button>
+                    <button type="button" class="amount-btn" data-amount="50">$50</button>
+                    <button type="button" class="amount-btn" data-amount="100">$100</button>
+                    <button type="button" class="amount-btn" data-amount="250">$250</button>
+                    <button type="button" class="amount-btn" data-amount="500">$500</button>
+                    <button type="button" class="amount-btn" data-amount="1000">$1,000</button>
+                </div>
+                <div class="custom-amount">
+                    <label for="custom-amount-input">Other Amount:</label>
+                    <div class="input-wrapper">
+                        <span class="dollar-sign">$</span>
+                        <input type="number" id="custom-amount-input" placeholder="0.00" min="1" step="0.01">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Donation Type -->
+            <div class="donation-type-section">
+                <h3>Donation Type</h3>
+                <div class="type-options">
+                    <label class="radio-label">
+                        <input type="radio" name="donation-type" value="one-time" checked>
+                        <span class="radio-custom"></span>
+                        One-time donation
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="donation-type" value="monthly">
+                        <span class="radio-custom"></span>
+                        Monthly recurring donation
+                    </label>
+                </div>
+            </div>
+
+            <!-- Processing Fee -->
+            <div class="processing-fee-section">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="cover-processing-fee" checked>
+                    <span class="checkbox-custom"></span>
+                    <span class="fee-text">
+                        Cover the processing fee <span class="fee-amount">($0.00)</span>
+                        <small class="fee-help">100% of your donation goes to the campaign</small>
+                    </span>
+                </label>
+            </div>
+
+            <!-- Donor Information -->
+            <div class="donor-info-section">
+                <h3>Your Information</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="first-name">First Name *</label>
+                        <input type="text" id="first-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="last-name">Last Name *</label>
+                        <input type="text" id="last-name" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone</label>
+                        <input type="tel" id="phone">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <label for="address">Address *</label>
+                        <input type="text" id="address" placeholder="Street address" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="city">City *</label>
+                        <input type="text" id="city" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="state">State *</label>
+                        <select id="state" required>
+                            <option value="">Select State</option>
+                            <option value="AL">Alabama</option>
+                            <option value="AK">Alaska</option>
+                            <option value="AZ">Arizona</option>
+                            <option value="AR">Arkansas</option>
+                            <option value="CA">California</option>
+                            <option value="CO">Colorado</option>
+                            <option value="CT">Connecticut</option>
+                            <option value="DE">Delaware</option>
+                            <option value="DC">District of Columbia</option>
+                            <option value="FL">Florida</option>
+                            <option value="GA">Georgia</option>
+                            <option value="HI">Hawaii</option>
+                            <option value="ID">Idaho</option>
+                            <option value="IL">Illinois</option>
+                            <option value="IN">Indiana</option>
+                            <option value="IA">Iowa</option>
+                            <option value="KS">Kansas</option>
+                            <option value="KY">Kentucky</option>
+                            <option value="LA">Louisiana</option>
+                            <option value="ME">Maine</option>
+                            <option value="MD">Maryland</option>
+                            <option value="MA">Massachusetts</option>
+                            <option value="MI">Michigan</option>
+                            <option value="MN">Minnesota</option>
+                            <option value="MS">Mississippi</option>
+                            <option value="MO">Missouri</option>
+                            <option value="MT">Montana</option>
+                            <option value="NE">Nebraska</option>
+                            <option value="NV">Nevada</option>
+                            <option value="NH">New Hampshire</option>
+                            <option value="NJ">New Jersey</option>
+                            <option value="NM">New Mexico</option>
+                            <option value="NY">New York</option>
+                            <option value="NC">North Carolina</option>
+                            <option value="ND">North Dakota</option>
+                            <option value="OH">Ohio</option>
+                            <option value="OK">Oklahoma</option>
+                            <option value="OR">Oregon</option>
+                            <option value="PA">Pennsylvania</option>
+                            <option value="RI">Rhode Island</option>
+                            <option value="SC">South Carolina</option>
+                            <option value="SD">South Dakota</option>
+                            <option value="TN">Tennessee</option>
+                            <option value="TX">Texas</option>
+                            <option value="UT">Utah</option>
+                            <option value="VT">Vermont</option>
+                            <option value="VA">Virginia</option>
+                            <option value="WA">Washington</option>
+                            <option value="WV">West Virginia</option>
+                            <option value="WI">Wisconsin</option>
+                            <option value="WY">Wyoming</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="zip">ZIP Code *</label>
+                        <input type="text" id="zip" pattern="[0-9]{5}(-[0-9]{4})?" placeholder="12345" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="occupation">Occupation *</label>
+                        <input type="text" id="occupation" placeholder="Your occupation" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="employer">Employer *</label>
+                        <input type="text" id="employer" placeholder="Your employer" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Information -->
+            <div class="payment-section">
+                <h3>Payment Information</h3>
+                <div id="card-element" class="stripe-element">
+                    <!-- Stripe Elements will create form elements here -->
+                </div>
+                <div id="card-errors" class="error-message" role="alert"></div>
+            </div>
+
+            <!-- Total and Submit -->
+            <div class="total-section">
+                <div class="total-breakdown">
+                    <div class="breakdown-row">
+                        <span>Donation:</span>
+                        <span id="donation-amount-display">$0.00</span>
+                    </div>
+                    <div class="breakdown-row" id="fee-breakdown" style="display: none;">
+                        <span>Processing Fee:</span>
+                        <span id="processing-fee-display">$0.00</span>
+                    </div>
+                    <div class="breakdown-row total-row">
+                        <span>Total:</span>
+                        <span id="total-amount-display">$0.00</span>
+                    </div>
+                </div>
+                <button type="submit" id="donate-button" disabled>
+                    <span id="button-text">Donate Now</span>
+                    <div id="spinner" class="spinner" style="display: none;"></div>
+                </button>
+            </div>
+        </form>
+
+        <!-- Success Message -->
+        <div id="success-message" class="success-message" style="display: none;">
+            <div class="success-icon">✓</div>
+            <h3>Thank you for your donation!</h3>
+            <p>Your contribution helps make a difference.</p>
+        </div>
+        
+        <!-- Contribution Rules -->
+        <div class="contribution-rules">
+            <h4>Contribution rules</h4>
+            <ul>
+                <li>I am a U.S. citizen or lawfully admitted permanent resident (i.e., green card holder).</li>
+                <li>This contribution is made from my own funds, and funds are not being provided to me by another person or entity for the purpose of making this contribution.</li>
+                <li>I am at least eighteen years old.</li>
+                <li>I am not a federal contractor.</li>
+                <li>I am making this contribution with my own personal credit card and not with a corporate or business credit card or a card issued to another person.</li>
+            </ul>
+            
+            <div class="legal-disclaimers">
+                <p><strong>Federal Election Commission Disclaimer:</strong> By proceeding with this transaction, you agree to the contribution rules above. Contributions to political candidates are not tax-deductible for federal income tax purposes.</p>
+                
+                <p><strong>Platform Disclaimer:</strong> This donation platform is paid for by [Campaign Committee Name] and not authorized by any other candidate or candidate committee. For questions about donations, please contact [contact information].</p>
+                
+                <p><strong>Contribution Limits:</strong> Federal law requires us to use our best efforts to collect and report the name, mailing address, occupation and name of employer of individuals whose contributions exceed $200 in a calendar year. The maximum amount an individual may contribute is $2,900 per election.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/widget.js"></script>
+</body>
+</html>

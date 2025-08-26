@@ -1,0 +1,33 @@
+{
+  "name": "donation-widget",
+  "version": "1.0.0",
+  "description": "A simple embeddable donation widget using Stripe Elements for political campaigns",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "nodemon server/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "donation",
+    "widget",
+    "stripe",
+    "political",
+    "campaign",
+    "fundraising"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "stripe": "^14.9.0",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
