@@ -15,6 +15,10 @@ class DonationWidget {
         this.processingFeeAmount = 0;
         this.totalAmount = 0;
         
+        // Card validation state
+        this.cardComplete = false;
+        this.cardEmpty = true;
+        
         // Processing fee calculation (typical rates: 2.9% + $0.30)
         this.processingFeeRate = 0.029;
         this.processingFeeFixed = 0.30;
@@ -70,11 +74,24 @@ class DonationWidget {
         // Handle card changes
         this.card.on('change', (event) => {
             const displayError = document.getElementById('card-errors');
+            
+            // Update card validation state
+            this.cardComplete = event.complete;
+            this.cardEmpty = event.empty;
+            
             if (event.error) {
                 displayError.textContent = event.error.message;
             } else {
                 displayError.textContent = '';
             }
+            
+            // Optional: Enable debug logging for development
+            // console.log('Card state:', {
+            //     complete: event.complete,
+            //     empty: event.empty,
+            //     error: event.error?.message || null
+            // });
+            
             this.updateDonateButton();
         });
     }
@@ -253,10 +270,20 @@ class DonationWidget {
         const buttonText = document.getElementById('button-text');
         
         const hasAmount = this.totalAmount > 0;
-        const hasValidCard = this.card && this.card._complete;
+        const hasValidCard = this.cardComplete && !this.cardEmpty;
         const hasRequiredFields = this.validateRequiredFields();
         
         const isValid = hasAmount && hasValidCard && hasRequiredFields;
+        
+        // Optional: Enable debug logging for development
+        // console.log('Button state:', {
+        //     hasAmount,
+        //     hasValidCard,
+        //     hasRequiredFields,
+        //     isValid,
+        //     cardComplete: this.cardComplete,
+        //     cardEmpty: this.cardEmpty
+        // });
         
         button.disabled = !isValid;
         
