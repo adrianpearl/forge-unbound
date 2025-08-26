@@ -34,6 +34,9 @@ class DonationWidget {
             // Setup event listeners
             this.setupEventListeners();
             
+            // Handle URL parameters for pre-filling amounts
+            this.handleUrlParameters();
+            
             // Initial calculations
             this.updateTotals();
             
@@ -158,6 +161,48 @@ class DonationWidget {
         document.querySelectorAll('.amount-btn').forEach(btn => {
             btn.classList.remove('selected');
         });
+    }
+    
+    handleUrlParameters() {
+        // Parse URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const amountParam = urlParams.get('amount');
+        
+        if (amountParam) {
+            // Convert from cents to dollars
+            const amountInCents = parseInt(amountParam);
+            const amountInDollars = amountInCents / 100;
+            
+            // Validate the amount
+            if (amountInCents > 0 && amountInDollars >= 1) {
+                console.log(`Pre-filling amount from URL: $${amountInDollars} (${amountInCents} cents)`);
+                
+                // Check if this amount matches any preset buttons
+                const presetAmounts = [25, 50, 100, 250, 500, 1000];
+                
+                if (presetAmounts.includes(amountInDollars)) {
+                    // Select the matching preset button
+                    const matchingButton = document.querySelector(`[data-amount="${amountInDollars}"]`);
+                    if (matchingButton) {
+                        this.selectAmount(matchingButton);
+                        console.log(`Selected preset button: $${amountInDollars}`);
+                    }
+                } else {
+                    // Use custom amount
+                    this.clearSelectedAmountButtons();
+                    this.selectedAmount = 0;
+                    this.customAmount = amountInDollars;
+                    
+                    // Fill in the custom amount input
+                    const customAmountInput = document.getElementById('custom-amount-input');
+                    customAmountInput.value = amountInDollars.toFixed(2);
+                    
+                    console.log(`Set custom amount: $${amountInDollars}`);
+                }
+            } else {
+                console.warn(`Invalid amount parameter: ${amountParam}. Amount must be at least 100 cents ($1.00)`);
+            }
+        }
     }
     
     calculateProcessingFee(amount) {
