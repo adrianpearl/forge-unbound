@@ -1,30 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Donation Widget</title>
+    <title>Donate | Vega for Congress</title>
     <script src="https://js.stripe.com/v3/"></script>
     <link rel="stylesheet" href="css/widget.css">
 </head>
-<body>
-    <div class="donation-widget" id="donation-widget">
-        <div class="widget-header">
-            <h2>Make a Donation</h2>
-            <p>Support our campaign</p>
-        </div>
 
+<body>
+    <div class="logo">
+        <img src="./assets/vega-red-black.png" />
+    </div>
+    <div class="page-header">
+        <h1>Make a Donation</h1>
+        <p>Support our campaign</p>
+    </div>
+    <div class="donation-widget" id="donation-widget">
         <form id="donation-form">
             <!-- Donation Amount Selection -->
             <div class="amount-section">
                 <h3>Select Amount</h3>
                 <div class="amount-grid">
+                    <button type="button" class="amount-btn" data-amount="5">$5</button>
                     <button type="button" class="amount-btn" data-amount="25">$25</button>
                     <button type="button" class="amount-btn" data-amount="50">$50</button>
                     <button type="button" class="amount-btn" data-amount="100">$100</button>
                     <button type="button" class="amount-btn" data-amount="250">$250</button>
                     <button type="button" class="amount-btn" data-amount="500">$500</button>
                     <button type="button" class="amount-btn" data-amount="1000">$1,000</button>
+                    <div class="custom-amount-input">
+                        <div class="input-wrapper">
+                            <span class="dollar-sign">$</span>
+                            <input type="number" id="custom-amount-input" placeholder="0.00" min="1" step="0.01">
+                        </div>
+                    </div>
                 </div>
                 <div class="custom-amount">
                     <label for="custom-amount-input">Other Amount:</label>
@@ -37,17 +48,19 @@
 
             <!-- Donation Type -->
             <div class="donation-type-section">
-                <h3>Donation Type</h3>
-                <div class="type-options">
-                    <label class="radio-label">
-                        <input type="radio" name="donation-type" value="one-time" checked>
-                        <span class="radio-custom"></span>
-                        One-time donation
+                <h3>Make it monthly!</h3>
+                <div class="donation-type-buttons">
+                    <label class="donation-type-btn active">
+                        <input type="radio" name="donation-type" value="monthly" checked>
+                        <span class="btn-content">
+                            <span class="btn-title">Yes, count me in!</span>
+                        </span>
                     </label>
-                    <label class="radio-label">
-                        <input type="radio" name="donation-type" value="monthly">
-                        <span class="radio-custom"></span>
-                        Monthly recurring donation
+                    <label class="donation-type-btn">
+                        <input type="radio" name="donation-type" value="one-time">
+                        <span class="btn-content">
+                            <span class="btn-title">No, donate once</span>
+                        </span>
                     </label>
                 </div>
             </div>
@@ -67,40 +80,34 @@
             <!-- Donor Information -->
             <div class="donor-info-section">
                 <h3>Your Information</h3>
+                <small>*All fields required unless otherwise noted.</small>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="first-name">First Name *</label>
-                        <input type="text" id="first-name" required>
+                        <input type="text" id="first-name" placeholder="First Name" required>
                     </div>
                     <div class="form-group">
-                        <label for="last-name">Last Name *</label>
-                        <input type="text" id="last-name" required>
+                        <input type="text" id="last-name" placeholder="Last Name" required>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="email">Email *</label>
-                        <input type="email" id="email" required>
+                        <input type="email" id="email" placeholder="Email" required>
                     </div>
                     <div class="form-group">
-                        <label for="phone">Phone</label>
-                        <input type="tel" id="phone">
+                        <input type="tel" id="phone" placeholder="Phone (optional)">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group full-width">
-                        <label for="address">Address *</label>
-                        <input type="text" id="address" placeholder="Street address" required>
+                        <input type="text" id="address" placeholder="Street address" placeholder="Address" required>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="city">City *</label>
-                        <input type="text" id="city" required>
+                        <input type="text" id="city" placeholder="City" required>
                     </div>
                     <div class="form-group">
-                        <label for="state">State *</label>
-                        <select id="state" required>
+                        <select id="state" placeholder="State" required>
                             <option value="">Select State</option>
                             <option value="AL">Alabama</option>
                             <option value="AK">Alaska</option>
@@ -156,18 +163,16 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="zip">ZIP Code *</label>
-                        <input type="text" id="zip" pattern="[0-9]{5}(-[0-9]{4})?" placeholder="12345" required>
+                        <input type="text" id="zip" pattern="[0-9]{5}(-[0-9]{4})?" placeholder="ZIP Code" required>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="occupation">Occupation *</label>
-                        <input type="text" id="occupation" placeholder="Your occupation" required>
+                        <input type="text" id="occupation" placeholder="Your occupation" placeholder="Occupation"
+                            required>
                     </div>
                     <div class="form-group">
-                        <label for="employer">Employer *</label>
-                        <input type="text" id="employer" placeholder="Your employer" required>
+                        <input type="text" id="employer" placeholder="Your employer" placeholder="Employer" required>
                     </div>
                 </div>
             </div>
@@ -188,7 +193,7 @@
                         <span>Donation:</span>
                         <span id="donation-amount-display">$0.00</span>
                     </div>
-                    <div class="breakdown-row" id="fee-breakdown" style="display: none;">
+                    <div class="breakdown-row" id="fee-breakdown">
                         <span>Processing Fee:</span>
                         <span id="processing-fee-display">$0.00</span>
                     </div>
@@ -208,30 +213,40 @@
         <div id="success-message" class="success-message" style="display: none;">
             <div class="success-icon">✓</div>
             <h3>Thank you for your donation!</h3>
-            <p>Your contribution helps make a difference.</p>
+            <p>Your contribution makes a huge difference.</p>
         </div>
-        
+
         <!-- Contribution Rules -->
         <div class="contribution-rules">
             <h4>Contribution rules</h4>
             <ul>
                 <li>I am a U.S. citizen or lawfully admitted permanent resident (i.e., green card holder).</li>
-                <li>This contribution is made from my own funds, and funds are not being provided to me by another person or entity for the purpose of making this contribution.</li>
+                <li>This contribution is made from my own funds, and funds are not being provided to me by another
+                    person or entity for the purpose of making this contribution.</li>
                 <li>I am at least eighteen years old.</li>
                 <li>I am not a federal contractor.</li>
-                <li>I am making this contribution with my own personal credit card and not with a corporate or business credit card or a card issued to another person.</li>
+                <li>I am making this contribution with my own personal credit card and not with a corporate or business
+                    credit card or a card issued to another person.</li>
             </ul>
-            
+
             <div class="legal-disclaimers">
-                <p><strong>Federal Election Commission Disclaimer:</strong> By proceeding with this transaction, you agree to the contribution rules above. Contributions to political candidates are not tax-deductible for federal income tax purposes.</p>
-                
-                <p><strong>Platform Disclaimer:</strong> This donation platform is paid for by Vega For Congress and not authorized by any other candidate or candidate committee. For questions about donations, please contact <a href="mailto:info@votevega.nyc">info@votevega.nyc</a>.</p>
-                
-                <p><strong>Contribution Limits:</strong> Federal law requires us to use our best efforts to collect and report the name, mailing address, occupation and name of employer of individuals whose contributions exceed $200 in a calendar year. The maximum amount an individual may contribute is $3,500 per election.</p>
+                <p><strong>Federal Election Commission Disclaimer:</strong> By proceeding with this transaction, you
+                    agree to the contribution rules above. Contributions to political candidates are not tax-deductible
+                    for federal income tax purposes.</p>
+
+                <p><strong>Platform Disclaimer:</strong> This donation platform is paid for by Vega For Congress and not
+                    authorized by any other candidate or candidate committee. For questions about donations, please
+                    contact <a href="mailto:info@votevega.nyc">info@votevega.nyc</a>.</p>
+
+                <p><strong>Contribution Limits:</strong> Federal law requires us to use our best efforts to collect and
+                    report the name, mailing address, occupation and name of employer of individuals whose contributions
+                    exceed $200 in a calendar year. The maximum amount an individual may contribute is $3,500 per
+                    election.</p>
             </div>
         </div>
     </div>
 
     <script src="js/widget.js"></script>
 </body>
+
 </html>

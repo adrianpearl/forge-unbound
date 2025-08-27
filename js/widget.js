@@ -23,6 +23,9 @@ class DonationWidget {
         this.processingFeeRate = 0.029;
         this.processingFeeFixed = 0.30;
         
+        // Federal contribution limit
+        this.maxContributionAmount = 3500;
+        
         this.init();
     }
     
@@ -38,6 +41,9 @@ class DonationWidget {
             // Setup event listeners
             this.setupEventListeners();
             
+            // Clear any browser-retained form values (prevents refresh issues)
+            this.clearFormOnLoad();
+            
             // Handle URL parameters for pre-filling amounts
             this.handleUrlParameters();
             
@@ -51,7 +57,7 @@ class DonationWidget {
     }
     
     setupStripeElements() {
-        // Create card element
+        // Create card element without ZIP code collection (we collect it in the form)
         this.card = this.elements.create('card', {
             style: {
                 base: {
@@ -66,6 +72,7 @@ class DonationWidget {
                     color: '#dc2626',
                 },
             },
+            hidePostalCode: true, // Don't show ZIP code in card element since we collect it above
         });
         
         // Mount card element
@@ -115,11 +122,21 @@ class DonationWidget {
             this.clearSelectedAmountButtons();
         });
         
-        // Donation type radio buttons
+        // Donation type buttons (ActBlue style)
+        document.querySelectorAll('.donation-type-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.selectDonationType(btn);
+            });
+        });
+        
+        // Also handle radio button changes directly (for accessibility)
         document.querySelectorAll('input[name="donation-type"]').forEach(radio => {
             radio.addEventListener('change', () => {
                 this.donationType = radio.value;
                 this.updateDonateButton();
+                // Update visual state of buttons
+                this.updateDonationTypeButtons();
             });
         });
         
@@ -180,6 +197,37 @@ class DonationWidget {
         });
     }
     
+    selectDonationType(button) {
+        // Clear other selections
+        document.querySelectorAll('.donation-type-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        
+        // Select this button
+        button.classList.add('active');
+        
+        // Update the radio button
+        const radioInput = button.querySelector('input[type="radio"]');
+        if (radioInput) {
+            radioInput.checked = true;
+            this.donationType = radioInput.value;
+        }
+        
+        this.updateDonateButton();
+    }
+    
+    updateDonationTypeButtons() {
+        // Update visual state based on selected radio button
+        document.querySelectorAll('.donation-type-btn').forEach(btn => {
+            const radioInput = btn.querySelector('input[type="radio"]');
+            if (radioInput && radioInput.checked) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+    }
+    
     handleUrlParameters() {
         // Parse URL parameters
         const urlParams = new URLSearchParams(window.location.search);
@@ -198,7 +246,7 @@ class DonationWidget {
                 const presetAmounts = [25, 50, 100, 250, 500, 1000];
                 
                 if (presetAmounts.includes(amountInDollars)) {
-                    // Select the matching preset button
+                    // Select the matching preset button (this calls updateTotals internally)
                     const matchingButton = document.querySelector(`[data-amount="${amountInDollars}"]`);
                     if (matchingButton) {
                         this.selectAmount(matchingButton);
@@ -213,6 +261,9 @@ class DonationWidget {
                     // Fill in the custom amount input
                     const customAmountInput = document.getElementById('custom-amount-input');
                     customAmountInput.value = amountInDollars.toFixed(2);
+                    
+                    // Update totals for custom amounts (preset amounts are handled by selectAmount)
+                    this.updateTotals();
                     
                     console.log(`Set custom amount: $${amountInDollars}`);
                 }
@@ -229,33 +280,187 @@ class DonationWidget {
     
     updateTotals() {
         const baseAmount = this.selectedAmount || this.customAmount || 0;
+        let processingFeeAmount = 0;
+        let totalAmount = baseAmount;
+        let canCoverFee = true;
         
-        if (this.coverProcessingFee && baseAmount > 0) {
-            // Calculate fee on base amount
-            this.processingFeeAmount = this.calculateProcessingFee(baseAmount);
+        // First check if base amount exceeds the limit
+        if (baseAmount > this.maxContributionAmount) {
+            // Base amount exceeds limit - don't allow this
+            this.showContributionLimitError(baseAmount);
+            return;
         } else {
-            this.processingFeeAmount = 0;
+            this.clearContributionLimitError();
         }
         
-        this.totalAmount = baseAmount + this.processingFeeAmount;
+        if (this.coverProcessingFee && baseAmount > 0) {
+            // Calculate the full processing fee
+            const fullProcessingFee = this.calculateProcessingFee(baseAmount);
+            
+            // Check if covering the full fee would exceed the contribution limit
+            if (baseAmount + fullProcessingFee > this.maxContributionAmount) {
+                // Can only cover partial fee to stay within limit
+                const maxAllowedFee = this.maxContributionAmount - baseAmount;
+                processingFeeAmount = Math.max(0, maxAllowedFee);
+                canCoverFee = false;
+                
+                console.log(`Partial fee coverage: donation ${baseAmount}, max fee allowed ${maxAllowedFee}, actual fee ${fullProcessingFee}`);
+            } else {
+                // Can cover the full fee
+                processingFeeAmount = fullProcessingFee;
+            }
+        }
+        
+        totalAmount = baseAmount + processingFeeAmount;
+        
+        // Update state
+        this.processingFeeAmount = processingFeeAmount;
+        this.totalAmount = totalAmount;
         
         // Update display
         document.getElementById('donation-amount-display').textContent = this.formatCurrency(baseAmount);
-        document.getElementById('processing-fee-display').textContent = this.formatCurrency(this.processingFeeAmount);
-        document.getElementById('total-amount-display').textContent = this.formatCurrency(this.totalAmount);
+        document.getElementById('processing-fee-display').textContent = this.formatCurrency(processingFeeAmount);
+        document.getElementById('total-amount-display').textContent = this.formatCurrency(totalAmount);
         
         // Update fee amount in checkbox label
-        document.querySelector('.fee-amount').textContent = `(${this.formatCurrency(this.processingFeeAmount)})`;
+        document.querySelector('.fee-amount').textContent = `(${this.formatCurrency(processingFeeAmount)})`;
         
-        // Show/hide fee breakdown
-        const feeBreakdown = document.getElementById('fee-breakdown');
-        if (this.coverProcessingFee && this.processingFeeAmount > 0) {
-            feeBreakdown.style.display = 'flex';
-        } else {
-            feeBreakdown.style.display = 'none';
-        }
+        // Update checkbox state and disable it if at exactly $3,500
+        this.updateProcessingFeeCheckbox(baseAmount, canCoverFee);
         
         this.updateDonateButton();
+    }
+    
+    updateProcessingFeeCheckbox(baseAmount, canCoverFee) {
+        const checkbox = document.getElementById('cover-processing-fee');
+        const checkboxLabel = checkbox.closest('.checkbox-label');
+        const feeHelpText = document.querySelector('.fee-help');
+        
+        if (baseAmount >= this.maxContributionAmount) {
+            // At maximum contribution - disable fee coverage
+            checkbox.disabled = true;
+            checkbox.checked = false;
+            this.coverProcessingFee = false;
+            checkboxLabel.style.opacity = '0.5';
+            feeHelpText.textContent = 'Fee coverage not available at maximum contribution limit';
+            feeHelpText.style.color = '#6b7280';
+        } else if (!canCoverFee && this.coverProcessingFee) {
+            // Partial fee coverage situation
+            checkbox.disabled = false;
+            checkboxLabel.style.opacity = '1';
+            const fullFee = this.calculateProcessingFee(baseAmount);
+            const coveredFee = this.processingFeeAmount;
+            const uncoveredFee = fullFee - coveredFee;
+            feeHelpText.innerHTML = `Covering ${this.formatCurrency(coveredFee)} of ${this.formatCurrency(fullFee)} fee (${this.formatCurrency(uncoveredFee)} due to contribution limit)`;
+            feeHelpText.style.color = '#6b7280';
+        } else {
+            // Normal state
+            checkbox.disabled = false;
+            checkboxLabel.style.opacity = '1';
+            feeHelpText.textContent = '100% of your donation goes to the campaign';
+            feeHelpText.style.color = '#6b7280';
+        }
+    }
+    
+    showContributionLimitError(amount) {
+        // Show error near the amount input instead of scrolling down
+        const errorMsg = `Maximum contribution is ${this.formatCurrency(this.maxContributionAmount)} per election. Amount adjusted to ${this.formatCurrency(this.maxContributionAmount)}.`;
+        this.showAmountError(errorMsg);
+        
+        // Reset to maximum allowed amount
+        if (this.customAmount > 0) {
+            const customAmountInput = document.getElementById('custom-amount-input');
+            customAmountInput.value = this.maxContributionAmount.toFixed(2);
+            this.customAmount = this.maxContributionAmount;
+        } else {
+            // Clear preset selection and set custom amount to max
+            this.clearSelectedAmountButtons();
+            this.selectedAmount = 0;
+            this.customAmount = this.maxContributionAmount;
+            const customAmountInput = document.getElementById('custom-amount-input');
+            customAmountInput.value = this.maxContributionAmount.toFixed(2);
+        }
+        
+        // Recalculate with corrected amount
+        setTimeout(() => this.updateTotals(), 100);
+    }
+    
+    showAmountError(message) {
+        // Show error near the amount section without scrolling
+        let errorElement = document.getElementById('amount-error');
+        if (!errorElement) {
+            // Create error element if it doesn't exist
+            errorElement = document.createElement('div');
+            errorElement.id = 'amount-error';
+            errorElement.className = 'amount-error-message';
+            
+            // Insert after the amount section
+            const amountSection = document.querySelector('.amount-section');
+            amountSection.appendChild(errorElement);
+        }
+        
+        errorElement.textContent = message;
+        errorElement.style.display = 'block';
+        
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+            if (errorElement) {
+                errorElement.style.display = 'none';
+            }
+        }, 5000);
+    }
+    
+    clearAmountError() {
+        const errorElement = document.getElementById('amount-error');
+        if (errorElement) {
+            errorElement.style.display = 'none';
+        }
+    }
+    
+    clearContributionLimitError() {
+        // Clear any existing error messages
+        const errorElement = document.getElementById('card-errors');
+        if (errorElement.textContent.includes('Maximum contribution')) {
+            errorElement.textContent = '';
+        }
+        
+        // Also clear the amount error message
+        this.clearAmountError();
+    }
+    
+    clearFormOnLoad() {
+        // Clear all form inputs to prevent browser auto-fill issues on refresh
+        const form = document.getElementById('donation-form');
+        if (form) {
+            form.reset();
+        }
+        
+        // Specifically clear custom amount input
+        const customAmountInput = document.getElementById('custom-amount-input');
+        if (customAmountInput) {
+            customAmountInput.value = '';
+        }
+        
+        // Clear any selected amount buttons
+        this.clearSelectedAmountButtons();
+        
+        // Reset state variables
+        this.selectedAmount = 0;
+        this.customAmount = 0;
+        this.processingFeeAmount = 0;
+        this.totalAmount = 0;
+        
+        // Reset donation type to default (one-time)
+        const oneTimeRadio = document.querySelector('input[name="donation-type"][value="one-time"]');
+        if (oneTimeRadio) {
+            oneTimeRadio.checked = true;
+            this.donationType = 'one-time';
+        }
+        
+        // Update donation type button visual state
+        this.updateDonationTypeButtons();
+        
+        console.log('Form cleared on page load to prevent browser auto-fill issues');
     }
     
     formatCurrency(amount) {
@@ -289,8 +494,11 @@ class DonationWidget {
         
         // Update button text
         if (hasAmount) {
-            const typeText = this.donationType === 'monthly' ? 'monthly' : 'now';
-            buttonText.textContent = `Donate ${this.formatCurrency(this.totalAmount)} ${typeText}`;
+            if (this.donationType === 'monthly') {
+                buttonText.textContent = `Donate ${this.formatCurrency(this.totalAmount)} monthly`;
+            } else {
+                buttonText.textContent = `Donate ${this.formatCurrency(this.totalAmount)} now`;
+            }
         } else {
             buttonText.textContent = 'Enter amount to donate';
         }
@@ -320,22 +528,40 @@ class DonationWidget {
             // Create payment intent on your server
             const { clientSecret } = await this.createPaymentIntent(formData);
             
+            console.log('💳 Confirming payment with Stripe...');
+            
+            // Debug: Log the billing details being sent
+            const billingDetails = {
+                name: `${formData.firstName} ${formData.lastName}`,
+                email: formData.email,
+                phone: formData.phone || undefined,
+                address: {
+                    line1: formData.address,
+                    city: formData.city,
+                    state: formData.state,
+                    postal_code: formData.zip,
+                    country: 'US'
+                }
+            };
+            
+            console.log('🏠 Billing details being sent to Stripe:', billingDetails);
+            
             // Confirm payment with Stripe
             const result = await this.stripe.confirmCardPayment(clientSecret, {
                 payment_method: {
                     card: this.card,
-                    billing_details: {
-                        name: `${formData.firstName} ${formData.lastName}`,
-                        email: formData.email,
-                        phone: formData.phone || undefined,
-                    },
+                    billing_details: billingDetails,
                 },
             });
             
+            console.log('Payment confirmation result:', result);
+            
             if (result.error) {
+                console.error('❌ Payment failed:', result.error);
                 this.showError(result.error.message);
                 this.setLoadingState(false);
             } else {
+                console.log('✅ Payment succeeded:', result.paymentIntent);
                 // Payment succeeded
                 this.showSuccess();
             }
@@ -393,11 +619,11 @@ class DonationWidget {
         
         if (loading) {
             button.disabled = true;
-            buttonText.style.opacity = '0';
+            buttonText.style.display = 'none';
             spinner.style.display = 'block';
         } else {
             this.updateDonateButton(); // This will set the correct disabled state
-            buttonText.style.opacity = '1';
+            buttonText.style.display = 'block';
             spinner.style.display = 'none';
         }
     }

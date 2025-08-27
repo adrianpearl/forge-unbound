@@ -5,6 +5,11 @@
     padding: 0;
 }
 
+:root {
+    --primaryColor: oklch(45.7% 0.24 277.023);
+    --white: #ffffff;
+  }
+
 body {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     line-height: 1.6;
@@ -13,19 +18,40 @@ body {
     padding: 0;
 }
 
+.logo {
+    padding: 20px 36px;
+    text-align: center;
+}
+
+.logo img {
+    max-width: 200px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+.page-header {
+    max-width: 600px;
+    margin: 12px auto;
+    padding: 24px 24px 20px;
+    display: none;
+    
+}
+
+.page-header h1 {
+    color: var(--primaryColor);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
 .donation-widget {
-    max-width: 480px;
+    max-width: 600px;
     margin: 36px auto;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
     overflow: hidden;
-    border: 1px solid #e1e5e9;
 }
 
 /* Header */
 .widget-header {
-    background: #1a73e8;
+    background: var(--primaryColor);
     color: white;
     padding: 24px 24px 20px;
     text-align: center;
@@ -36,6 +62,7 @@ body {
     font-weight: 600;
     margin-bottom: 4px;
     letter-spacing: -0.5px;
+    color: var(--primaryColor);
 }
 
 .widget-header p {
@@ -70,14 +97,13 @@ form {
 h3 {
     font-size: 18px;
     font-weight: 600;
-    margin-bottom: 15px;
     color: #1f2937;
 }
 
 /* Amount selection */
 .amount-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 10px;
     margin-bottom: 20px;
 }
@@ -85,7 +111,7 @@ h3 {
 .amount-btn {
     background: white;
     border: 2px solid #e5e7eb;
-    border-radius: 8px;
+    border-radius: 4px;
     padding: 15px 10px;
     font-size: 16px;
     font-weight: 600;
@@ -95,17 +121,18 @@ h3 {
 }
 
 .amount-btn:hover {
-    border-color: #3b82f6;
+    border-color: var(--primaryColor);
     background-color: #f8faff;
 }
 
 .amount-btn.selected {
-    background-color: #3b82f6;
-    border-color: #3b82f6;
+    background-color: var(--primaryColor);
+    border-color: var(--primaryColor);
     color: white;
 }
 
 .custom-amount {
+    display: none;
     border-top: 1px solid #e5e7eb;
     padding-top: 20px;
 }
@@ -117,15 +144,21 @@ h3 {
     color: #374151;
 }
 
+.custom-amount-wrapper {
+    padding: 12px 0px;
+}
+
 .input-wrapper {
     position: relative;
     display: flex;
     align-items: center;
+    height: 100%;
 }
 
 .dollar-sign {
     position: absolute;
-    left: 12px;
+    left: 15px;
+    top: 16px;
     font-weight: 600;
     color: #6b7280;
     z-index: 1;
@@ -133,17 +166,97 @@ h3 {
 
 #custom-amount-input {
     width: 100%;
-    padding: 12px 12px 12px 28px;
+    height: 100%;
+    padding: 12px 12px 12px 30px;
     border: 2px solid #e5e7eb;
-    border-radius: 8px;
+    border-radius: 4px;
     font-size: 16px;
     transition: border-color 0.2s ease;
 }
 
 #custom-amount-input:focus {
     outline: none;
-    border-color: #3b82f6;
+    border-color: var(--primaryColor);
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* ActBlue-style donation type buttons */
+.donation-type-buttons {
+    display: flex;
+    gap: 0;
+    border: 2px solid #e5e7eb;
+    border-radius: 4px;
+    overflow: hidden;
+    background: white;
+}
+
+.donation-type-btn {
+    flex: 1;
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 0.75rem;
+    background: white;
+    border: none;
+    border-right: 1px solid #e5e7eb;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.donation-type-btn:last-child {
+    border-right: none;
+}
+
+.donation-type-btn input[type="radio"] {
+    display: none;
+}
+
+.btn-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    pointer-events: none;
+}
+
+.btn-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #374151;
+    transition: color 0.2s ease;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+.btn-subtitle {
+    font-size: 13px;
+    color: #6b7280;
+    transition: color 0.2s ease;
+}
+
+.donation-type-btn:hover {
+    background: #f8faff;
+}
+
+.donation-type-btn:hover .btn-title {
+    color: var(--primaryColor);
+}
+
+.donation-type-btn:hover .btn-subtitle {
+    color: var(--primaryColor);
+}
+
+.donation-type-btn.active {
+    background: var(--primaryColor);
+    color: white;
+}
+
+.donation-type-btn.active .btn-title {
+    color: white;
+}
+
+.donation-type-btn.active .btn-subtitle {
+    color: rgba(255, 255, 255, 0.9);
 }
 
 /* Radio buttons and checkboxes */
@@ -187,14 +300,14 @@ h3 {
 }
 
 .radio-label input[type="radio"]:checked + .radio-custom {
-    border-color: #3b82f6;
-    background-color: #3b82f6;
+    border-color: var(--primaryColor);
+    background-color: var(--primaryColor);
     background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e");
 }
 
 .checkbox-label input[type="checkbox"]:checked + .checkbox-custom {
-    border-color: #3b82f6;
-    background-color: #3b82f6;
+    border-color: var(--primaryColor);
+    background-color: var(--primaryColor);
     background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 20 20' fill='currentColor' xmlns='http://www.w3.org/2000/svg'%3e%3cpath fill-rule='evenodd' d='M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z' clip-rule='evenodd'/%3e%3c/svg%3e");
     background-size: 100% 100%;
     background-position: center;
@@ -243,7 +356,7 @@ h3 {
     width: 100%;
     padding: 12px;
     border: 2px solid #e5e7eb;
-    border-radius: 8px;
+    border-radius: 4px;
     font-size: 16px;
     transition: border-color 0.2s ease;
 }
@@ -251,7 +364,7 @@ h3 {
 .form-group input:focus,
 .form-group select:focus {
     outline: none;
-    border-color: #3b82f6;
+    border-color: var(--primaryColor);
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
@@ -259,7 +372,7 @@ h3 {
     width: 100%;
     padding: 12px;
     border: 2px solid #e5e7eb;
-    border-radius: 8px;
+    border-radius: 4px;
     font-size: 16px;
     transition: border-color 0.2s ease;
     background: white;
@@ -275,12 +388,12 @@ h3 {
     background: white;
     padding: 12px;
     border: 2px solid #e5e7eb;
-    border-radius: 8px;
+    border-radius: 4px;
     transition: border-color 0.2s ease;
 }
 
 .stripe-element:focus-within {
-    border-color: #3b82f6;
+    border-color: var(--primaryColor);
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
@@ -300,11 +413,35 @@ h3 {
     display: block;
 }
 
+/* Amount error message (appears near amount input) */
+.amount-error-message {
+    color: #dc2626;
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 4px;
+    padding: 12px 16px;
+    font-size: 14px;
+    margin-top: 15px;
+    display: none;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* Total section */
 .total-breakdown {
     background: #f8faff;
     border: 1px solid #e0e7ff;
-    border-radius: 8px;
+    border-radius: 4px;
     padding: 20px;
     margin-bottom: 20px;
 }
@@ -336,7 +473,7 @@ h3 {
     background: linear-gradient(135deg, #059669, #10b981);
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 4px;
     padding: 16px 24px;
     font-size: 18px;
     font-weight: 600;
@@ -475,7 +612,7 @@ h3 {
     content: "•";
     position: absolute;
     left: 0;
-    color: #1a73e8;
+    color: var(--primaryColor);
     font-weight: bold;
 }
 

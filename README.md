@@ -40,7 +40,7 @@ Edit `.env` file and add your Stripe keys:
 
 ```env
 STRIPE_PUBLISHABLE_KEY=pk_test_your_actual_publishable_key_here
-STRIPE_SECRET_KEY=sk_test_your_actual_secret_key_here
+STRIPE_RESTRICTED_KEY=rk_test_your_actual_restricted_key_here
 ```
 
 ### 4. Start the Server
@@ -124,7 +124,7 @@ window.STRIPE_PUBLISHABLE_KEY = 'pk_test_your_publishable_key';
 | Variable | Description | Required |
 |----------|-------------|----------|
 | `STRIPE_PUBLISHABLE_KEY` | Stripe publishable key | Yes |
-| `STRIPE_SECRET_KEY` | Stripe secret key | Yes |
+| `STRIPE_RESTRICTED_KEY` | Stripe restricted key | Yes |
 | `STRIPE_WEBHOOK_SECRET` | Webhook endpoint secret | No |
 | `PORT` | Server port (default: 3000) | No |
 
@@ -225,7 +225,7 @@ heroku create your-donation-widget
 
 # Set environment variables
 heroku config:set STRIPE_PUBLISHABLE_KEY=pk_live_...
-heroku config:set STRIPE_SECRET_KEY=sk_live_...
+heroku config:set STRIPE_RESTRICTED_KEY=rk_live_...
 
 # Deploy
 git push heroku main
