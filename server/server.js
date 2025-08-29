@@ -384,13 +384,18 @@ async function handleInvoiceFinalized(invoice) {
 }
 
 // Check for --host parameter to enable network access
+// In production environments, always bind to 0.0.0.0 for external access
 const enableNetworkAccess = process.argv.includes('--host');
-const host = enableNetworkAccess ? '0.0.0.0' : 'localhost';
+const isProduction = process.env.NODE_ENV === 'production' || process.env.RAILWAY_ENVIRONMENT;
+const host = (enableNetworkAccess || isProduction) ? '0.0.0.0' : 'localhost';
 
 // Start server
 app.listen(port, host, () => {
-    console.log(`🚀 Donation widget server running at http://localhost:${port}`);
+    console.log(`🚀 Donation widget server running at http://${host}:${port}`);
     console.log(`📝 Widget available at http://localhost:${port}`);
+    if (isProduction) {
+        console.log(`🌐 Production mode: Server bound to ${host} for external access`);
+    }
     
     // Show network access info only when --host is used
     if (enableNetworkAccess) {
