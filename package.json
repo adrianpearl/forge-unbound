@@ -5,7 +5,13 @@
   "main": "server/server.js",
   "scripts": {
     "start": "node server/server.js",
+    "start:host": "node server/server.js --host",
+    "start:preview": "node server/server.js --preview",
+    "start:full": "node server/server.js --host --preview",
     "dev": "nodemon server/server.js",
+    "dev:host": "nodemon server/server.js --host",
+    "dev:preview": "nodemon server/server.js --preview",
+    "dev:full": "nodemon server/server.js --host --preview",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

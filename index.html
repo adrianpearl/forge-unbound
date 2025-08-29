@@ -11,7 +11,9 @@
 
 <body>
     <div class="logo">
-        <img src="./assets/vega-red-black.png" />
+        <a href="https://votevega.nyc/">
+            <img src="./assets/vega-red-black.png" />
+        </a>
     </div>
     <div class="page-header">
         <h1>Make a Donation</h1>
@@ -94,7 +96,8 @@
                         <input type="email" id="email" placeholder="Email" required>
                     </div>
                     <div class="form-group">
-                        <input type="tel" id="phone" placeholder="Phone (optional)">
+                        <input type="tel" id="phone" placeholder="Phone (optional, US or intnl)" maxlength="20"
+                            pattern="[0-9\-\(\)\+\s]*" title="Phone number (US or international format)">
                     </div>
                 </div>
                 <div class="form-row">
@@ -163,7 +166,8 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <input type="text" id="zip" pattern="[0-9]{5}(-[0-9]{4})?" placeholder="ZIP Code" required>
+                        <input type="text" id="zip" pattern="[0-9]{5}(-[0-9]{4})?" placeholder="ZIP Code" maxlength="10"
+                            title="5-digit ZIP code or ZIP+4 format (12345 or 12345-6789)" required>
                     </div>
                 </div>
                 <div class="form-row">
@@ -245,6 +249,16 @@
             </div>
         </div>
     </div>
+
+    <footer style="text-align: center; padding: 20px; margin-top: 30px; border-top: 1px solid #eee; background: #f9f9f9;">
+        <p>
+            <a href="privacy.html" style="color: #d32f2f; text-decoration: none; margin: 0 10px;">Privacy Policy</a> | 
+            <a href="terms.html" style="color: #d32f2f; text-decoration: none; margin: 0 10px;">Terms of Service</a>
+        </p>
+        <p style="font-size: 12px; color: #666; margin-top: 10px;">
+            Paid for by Vega for Congress. Not authorized by any candidate or candidate's committee.
+        </p>
+    </footer>
 
     <script src="js/widget.js"></script>
 </body>

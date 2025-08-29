@@ -23,6 +23,12 @@ body {
     text-align: center;
 }
 
+.logo a {
+    display: block;
+    width: max-content;
+    margin: 0 auto;
+}
+
 .logo img {
     max-width: 200px;
     height: auto;

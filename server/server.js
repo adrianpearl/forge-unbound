@@ -30,11 +30,16 @@ app.get('/', (req, res) => {
         // Inject the Stripe publishable key from environment
         const stripeKey = process.env.STRIPE_PUBLISHABLE_KEY || 'pk_test_dummy_key_replace_with_real_key';
         
+        // Check for --preview parameter to enable preview mode (localhost only)
+        const enablePreview = process.argv.includes('--preview');
+        
         // Create the script injection
         const scriptInjection = `    <script>
         // Stripe publishable key injected by server (campaign-specific)
         window.STRIPE_PUBLISHABLE_KEY = '${stripeKey}';
         console.log('Stripe key configured:', '${stripeKey.substring(0, 12)}...');
+        // Preview mode control (injected by server)
+        window.ENABLE_PREVIEW_MODE = ${enablePreview};
     </script>`;
         
         // Insert the script before the widget.js script
@@ -44,6 +49,28 @@ app.get('/', (req, res) => {
         );
         
         res.send(modifiedHtml);
+    });
+});
+
+// Serve Privacy Policy page
+app.get('/privacy.html', (req, res) => {
+    const htmlPath = path.join(__dirname, '..', 'privacy.html');
+    res.sendFile(htmlPath, (err) => {
+        if (err) {
+            console.error('Error serving privacy.html:', err);
+            res.status(404).send('Privacy Policy page not found');
+        }
+    });
+});
+
+// Serve Terms of Service page
+app.get('/terms.html', (req, res) => {
+    const htmlPath = path.join(__dirname, '..', 'terms.html');
+    res.sendFile(htmlPath, (err) => {
+        if (err) {
+            console.error('Error serving terms.html:', err);
+            res.status(404).send('Terms of Service page not found');
+        }
     });
 });
 
@@ -356,10 +383,46 @@ async function handleInvoiceFinalized(invoice) {
     }
 }
 
+// Check for --host parameter to enable network access
+const enableNetworkAccess = process.argv.includes('--host');
+const host = enableNetworkAccess ? '0.0.0.0' : 'localhost';
+
 // Start server
-app.listen(port, () => {
+app.listen(port, host, () => {
     console.log(`🚀 Donation widget server running at http://localhost:${port}`);
     console.log(`📝 Widget available at http://localhost:${port}`);
+    
+    // Show network access info only when --host is used
+    if (enableNetworkAccess) {
+        // Get local network IP for mobile access
+        const { networkInterfaces } = require('os');
+        const nets = networkInterfaces();
+        const results = {};
+        
+        for (const name of Object.keys(nets)) {
+            for (const net of nets[name]) {
+                // Skip over non-IPv4 and internal (i.e. 127.0.0.1) addresses
+                if (net.family === 'IPv4' && !net.internal) {
+                    if (!results[name]) {
+                        results[name] = [];
+                    }
+                    results[name].push(net.address);
+                }
+            }
+        }
+        
+        // Display network access info
+        const networkIPs = Object.values(results).flat();
+        if (networkIPs.length > 0) {
+            console.log(`📱 Network access enabled! Available at:`);
+            networkIPs.forEach(ip => {
+                console.log(`   - http://${ip}:${port}`);
+            });
+            console.log(`📱 Use these URLs to access from mobile devices on the same network`);
+        } else {
+            console.log(`📱 Network access enabled, but no external network interfaces found`);
+        }
+    }
     
     if (!process.env.STRIPE_RESTRICTED_KEY || process.env.STRIPE_RESTRICTED_KEY === 'sk_test_dummy_secret_key_replace_with_real_key') {
         console.warn('⚠️  Warning: Using dummy Stripe restricted key. Set STRIPE_RESTRICTED_KEY environment variable.');

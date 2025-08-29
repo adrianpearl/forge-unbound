@@ -44,11 +44,14 @@ class DonationWidget {
             // Clear any browser-retained form values (prevents refresh issues)
             this.clearFormOnLoad();
             
-            // Handle URL parameters for pre-filling amounts
-            this.handleUrlParameters();
-            
-            // Initial calculations
-            this.updateTotals();
+        // Handle URL parameters for pre-filling amounts
+        this.handleUrlParameters();
+        
+        // Add development-only preview option
+        this.addDevelopmentPreview();
+        
+        // Initial calculations
+        this.updateTotals();
             
         } catch (error) {
             console.error('Error initializing donation widget:', error);
@@ -160,6 +163,16 @@ class DonationWidget {
         document.getElementById('donation-form').addEventListener('submit', (e) => {
             e.preventDefault();
             this.handleSubmit();
+        });
+        
+        // Phone number validation and formatting
+        document.getElementById('phone').addEventListener('input', (e) => {
+            this.handlePhoneInput(e);
+        });
+        
+        // ZIP code validation
+        document.getElementById('zip').addEventListener('input', (e) => {
+            this.handleZipInput(e);
         });
     }
     
@@ -463,6 +476,151 @@ class DonationWidget {
         console.log('Form cleared on page load to prevent browser auto-fill issues');
     }
     
+    addDevelopmentPreview() {
+        // Only show if explicitly enabled by server AND running on localhost
+        const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const previewEnabled = window.ENABLE_PREVIEW_MODE === true;
+        
+        if (!isLocalhost || !previewEnabled) {
+            return;
+        }
+        
+        // Create preview button
+        const previewButton = document.createElement('button');
+        previewButton.type = 'button';
+        previewButton.className = 'dev-preview-btn';
+        previewButton.textContent = '🎯 Preview Confirmation Page (Dev Only)';
+        previewButton.style.cssText = `
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: #f59e0b;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 1000;
+            transition: background-color 0.2s;
+        `;
+        
+        previewButton.addEventListener('mouseenter', () => {
+            previewButton.style.backgroundColor = '#d97706';
+        });
+        
+        previewButton.addEventListener('mouseleave', () => {
+            previewButton.style.backgroundColor = '#f59e0b';
+        });
+        
+        previewButton.addEventListener('click', () => {
+            this.previewConfirmationPage();
+        });
+        
+        document.body.appendChild(previewButton);
+        
+        console.log('🛠️ Development preview button added (localhost only)');
+    }
+    
+    previewConfirmationPage() {
+        console.log('🎯 Previewing confirmation page with current form data');
+        
+        // Get current form data or use demo data
+        const formData = this.getFormDataForPreview();
+        
+        // Temporarily set totalAmount if not set
+        const originalTotalAmount = this.totalAmount;
+        if (this.totalAmount <= 0) {
+            this.totalAmount = 25.75; // Demo amount with fee
+            this.donationType = 'one-time';
+        }
+        
+        // Show success page with demo data
+        this.showSuccess(formData, true);
+        
+        // Restore original amount
+        this.totalAmount = originalTotalAmount;
+        
+        // Add a "Back to Form" button for preview mode
+        this.addBackToFormButton();
+    }
+    
+    getFormDataForPreview() {
+        // Try to get real form data first
+        const realFirstName = document.getElementById('first-name').value.trim();
+        const realLastName = document.getElementById('last-name').value.trim();
+        const realEmail = document.getElementById('email').value.trim();
+        
+        // Use real data if available, otherwise use demo data
+        return {
+            firstName: realFirstName || 'Jane',
+            lastName: realLastName || 'Smith',
+            email: realEmail || 'jane.smith@example.com',
+            phone: document.getElementById('phone').value.trim() || '(555) 123-4567',
+            address: document.getElementById('address').value.trim() || '123 Main Street',
+            city: document.getElementById('city').value.trim() || 'Anytown',
+            state: document.getElementById('state').value.trim() || 'CA',
+            zip: document.getElementById('zip').value.trim() || '90210',
+            occupation: document.getElementById('occupation').value.trim() || 'Software Engineer',
+            employer: document.getElementById('employer').value.trim() || 'Tech Company Inc.',
+            donationType: this.donationType,
+            donationAmount: this.selectedAmount || this.customAmount || 25,
+            processingFeeAmount: this.processingFeeAmount || 1.03,
+            totalAmount: this.totalAmount || 26.03
+        };
+    }
+    
+    addBackToFormButton() {
+        const successMessage = document.getElementById('success-message');
+        
+        // Remove existing back button if present
+        const existingBackButton = successMessage.querySelector('.back-to-form-btn');
+        if (existingBackButton) {
+            existingBackButton.remove();
+        }
+        
+        // Create back button
+        const backButton = document.createElement('button');
+        backButton.type = 'button';
+        backButton.className = 'back-to-form-btn';
+        backButton.textContent = '← Back to Form (Preview Mode)';
+        backButton.style.cssText = `
+            background: #6b7280;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.2s;
+        `;
+        
+        backButton.addEventListener('mouseenter', () => {
+            backButton.style.backgroundColor = '#4b5563';
+        });
+        
+        backButton.addEventListener('mouseleave', () => {
+            backButton.style.backgroundColor = '#6b7280';
+        });
+        
+        backButton.addEventListener('click', () => {
+            // Show form again
+            const form = document.getElementById('donation-form');
+            const successMessage = document.getElementById('success-message');
+            
+            form.style.display = 'block';
+            successMessage.style.display = 'none';
+            
+            console.log('📝 Returned to form from preview mode');
+        });
+        
+        successMessage.appendChild(backButton);
+    }
+    
     formatCurrency(amount) {
         return new Intl.NumberFormat('en-US', {
             style: 'currency',
@@ -652,6 +810,79 @@ class DonationWidget {
         
         // Scroll to error
         errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    
+    handlePhoneInput(event) {
+        const input = event.target;
+        let value = input.value;
+        
+        // Allow digits, spaces, hyphens, parentheses, and plus sign
+        let filtered = value.replace(/[^0-9\s\-\(\)\+]/g, '');
+        
+        // Detect if this looks like an international number (starts with +)
+        const isInternational = filtered.trim().startsWith('+');
+        
+        if (isInternational) {
+            // For international numbers, just clean up and limit length
+            // Remove extra spaces and limit to reasonable length
+            filtered = filtered.replace(/\s+/g, ' ').trim();
+            if (filtered.length > 20) {
+                filtered = filtered.substring(0, 20);
+            }
+            input.value = filtered;
+        } else {
+            // For domestic numbers, apply US formatting
+            let digitsOnly = filtered.replace(/\D/g, '');
+            
+            // Limit to 10 digits for US numbers
+            digitsOnly = digitsOnly.substring(0, 10);
+            
+            // Format as (XXX) XXX-XXXX for US numbers
+            let formattedValue = '';
+            if (digitsOnly.length > 0) {
+                if (digitsOnly.length <= 3) {
+                    formattedValue = `(${digitsOnly}`;
+                } else if (digitsOnly.length <= 6) {
+                    formattedValue = `(${digitsOnly.substring(0, 3)}) ${digitsOnly.substring(3)}`;
+                } else {
+                    formattedValue = `(${digitsOnly.substring(0, 3)}) ${digitsOnly.substring(3, 6)}-${digitsOnly.substring(6)}`;
+                }
+            }
+            input.value = formattedValue;
+        }
+        
+        // Update button state
+        this.updateDonateButton();
+    }
+    
+    handleZipInput(event) {
+        const input = event.target;
+        let value = input.value;
+        
+        // Remove all non-digit and non-hyphen characters
+        let filtered = value.replace(/[^0-9-]/g, '');
+        
+        // Handle ZIP+4 format (12345-6789)
+        if (filtered.includes('-')) {
+            const parts = filtered.split('-');
+            const zip5 = parts[0].substring(0, 5); // First 5 digits
+            const zip4 = parts[1] ? parts[1].substring(0, 4) : ''; // Next 4 digits if present
+            
+            if (zip4.length > 0) {
+                filtered = `${zip5}-${zip4}`;
+            } else {
+                filtered = zip5 + (parts.length > 1 ? '-' : '');
+            }
+        } else {
+            // Standard 5-digit ZIP
+            filtered = filtered.substring(0, 5);
+        }
+        
+        // Update the input value
+        input.value = filtered;
+        
+        // Update button state
+        this.updateDonateButton();
     }
 }
 
