@@ -518,6 +518,23 @@ h3 {
     to { transform: rotate(360deg); }
 }
 
+.stripe-badge {
+    margin-top: 12px;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+}
+
+.stripe-badge span {
+    font-size: smaller;
+    line-height: 1.0;
+    padding: 0.5em 0em;
+}
+
+.stripe-badge img {
+    height: 24px;
+}
+
 /* Success message */
 .success-message {
     padding: 40px 30px;
