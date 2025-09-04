@@ -16,8 +16,23 @@ const stripe = require('stripe')(process.env.STRIPE_RESTRICTED_KEY);
 app.use(cors());
 app.use(express.json());
 
-// Serve the widget with dynamic Stripe key injection
+// Serve the homepage with redirect to /donate
 app.get('/', (req, res) => {
+    const fs = require('fs');
+    const htmlPath = path.join(__dirname, '..', 'home.html');
+    
+    fs.readFile(htmlPath, 'utf8', (err, html) => {
+        if (err) {
+            console.error('Error reading home HTML file:', err);
+            return res.status(500).send('Error loading page');
+        }
+        
+        res.send(html);
+    });
+});
+
+// Serve the donation widget with dynamic Stripe key injection at /donate
+app.get('/donate', (req, res) => {
     const fs = require('fs');
     const htmlPath = path.join(__dirname, '..', 'index.html');
     

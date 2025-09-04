@@ -336,7 +336,7 @@ onSuccess: function(data) {
 For political campaigns, ensure you:
 
 1. **Collect required information** (name, address, occupation, employer)
-2. **Set contribution limits** (federal: $2,900 per election)
+2. **Set contribution limits** (federal: $3,500 per primary + $3,500 per general election)
 3. **Handle prohibited contributors** (foreign nationals, corporations)
 4. **File proper reports** with FEC or state agencies
 5. **Store donation records** for required periods
