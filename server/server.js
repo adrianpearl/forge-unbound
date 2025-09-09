@@ -119,7 +119,8 @@ app.post('/api/create-payment-intent', async (req, res) => {
             state,
             zip,
             occupation,
-            employer
+            employer,
+            comment
         } = req.body;
 
         // Validate required fields
@@ -154,7 +155,8 @@ app.post('/api/create-payment-intent', async (req, res) => {
                     donation_amount: donationAmount.toString(),
                     processing_fee: processingFee.toString(),
                     occupation: occupation,
-                    employer: employer
+                    employer: employer,
+                    comment: comment || ''
                 }
             });
             console.log('✅ Customer created:', customer.id);
@@ -179,7 +181,8 @@ app.post('/api/create-payment-intent', async (req, res) => {
             metadata: {
                 donation_type: donationType,
                 donor_name: `${firstName} ${lastName}`,
-                donor_email: email
+                donor_email: email,
+                comment: comment || ''
             }
         };
         
@@ -197,7 +200,8 @@ app.post('/api/create-payment-intent', async (req, res) => {
                 name: 'Monthly Donation',
                 metadata: {
                     donor_name: `${firstName} ${lastName}`,
-                    donor_email: email
+                    donor_email: email,
+                    comment: comment || ''
                 }
             });
 
@@ -220,7 +224,8 @@ app.post('/api/create-payment-intent', async (req, res) => {
                     donor_name: `${firstName} ${lastName}`,
                     donor_email: email,
                     donation_amount: donationAmount.toString(),
-                    processing_fee: processingFee.toString()
+                    processing_fee: processingFee.toString(),
+                    comment: comment || ''
                 },
                 automatic_tax: {
                     enabled: false,

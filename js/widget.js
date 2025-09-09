@@ -582,6 +582,7 @@ class DonationWidget {
             zip: document.getElementById('zip').value.trim() || '90210',
             occupation: document.getElementById('occupation').value.trim() || 'Software Engineer',
             employer: document.getElementById('employer').value.trim() || 'Tech Company Inc.',
+            comment: document.getElementById('comment').value.trim() || '',
             donationType: this.donationType,
             donationAmount: this.selectedAmount || this.customAmount || 25,
             processingFeeAmount: this.processingFeeAmount || 1.03,
@@ -760,6 +761,7 @@ class DonationWidget {
             zip: document.getElementById('zip').value.trim(),
             occupation: document.getElementById('occupation').value.trim(),
             employer: document.getElementById('employer').value.trim(),
+            comment: document.getElementById('comment').value.trim(),
             amount: Math.round(this.totalAmount * 100), // Convert to cents
             donationAmount: Math.round((this.selectedAmount || this.customAmount) * 100),
             processingFee: Math.round(this.processingFeeAmount * 100),
