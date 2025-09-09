@@ -378,10 +378,14 @@ class DonationWidget {
             // Partial fee coverage situation
             checkbox.disabled = false;
             checkboxLabel.style.opacity = '1';
-            const fullFee = this.calculateProcessingFee(baseAmount);
-            const coveredFee = this.processingFeeAmount;
-            const uncoveredFee = fullFee - coveredFee;
-            feeHelpText.innerHTML = `Covering ${this.formatCurrency(coveredFee)} of ${this.formatCurrency(fullFee)} fee (${this.formatCurrency(uncoveredFee)} due to contribution limit)`;
+            
+            // Calculate what the full fee would be if we could charge the required total
+            const requiredTotalAmount = this.calculateTotalForDesiredNet(baseAmount);
+            const idealProcessingFee = requiredTotalAmount - baseAmount;
+            const actualProcessingFee = this.processingFeeAmount;
+            const uncoveredFee = idealProcessingFee - actualProcessingFee;
+            
+            feeHelpText.innerHTML = `Covering ${this.formatCurrency(actualProcessingFee)} of ${this.formatCurrency(idealProcessingFee)} fee (${this.formatCurrency(uncoveredFee)} not covered due to contribution limit)`;
             feeHelpText.style.color = '#6b7280';
         } else {
             // Normal state

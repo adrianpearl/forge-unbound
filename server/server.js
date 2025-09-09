@@ -150,13 +150,8 @@ app.post('/api/create-payment-intent', async (req, res) => {
                     country: 'US'
                 },
                 metadata: {
-                    donation_type: donationType,
-                    cover_processing_fee: coverProcessingFee.toString(),
-                    donation_amount: donationAmount.toString(),
-                    processing_fee: processingFee.toString(),
-                    occupation: occupation,
-                    employer: employer,
-                    comment: comment || ''
+                    occupation: occupation || '',
+                    employer: employer || ''
                 }
             });
             console.log('✅ Customer created:', customer.id);
@@ -182,6 +177,9 @@ app.post('/api/create-payment-intent', async (req, res) => {
                 donation_type: donationType,
                 donor_name: `${firstName} ${lastName}`,
                 donor_email: email,
+                cover_processing_fee: coverProcessingFee.toString(),
+                occupation: occupation || '',
+                employer: employer || '',
                 comment: comment || ''
             }
         };
@@ -223,8 +221,9 @@ app.post('/api/create-payment-intent', async (req, res) => {
                     donation_type: 'monthly',
                     donor_name: `${firstName} ${lastName}`,
                     donor_email: email,
-                    donation_amount: donationAmount.toString(),
-                    processing_fee: processingFee.toString(),
+                    cover_processing_fee: coverProcessingFee.toString(),
+                    occupation: occupation || '',
+                    employer: employer || '',
                     comment: comment || ''
                 },
                 automatic_tax: {
