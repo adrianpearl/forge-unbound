@@ -165,6 +165,8 @@ app.post('/api/create-payment-intent', async (req, res) => {
                     country: 'US'
                 },
                 metadata: {
+                    processed_by: 'VegaDonationEngine',
+                    app_version: '1.0.0',
                     occupation: occupation || '',
                     employer: employer || '',
                     comment: comment || '',
@@ -197,6 +199,8 @@ app.post('/api/create-payment-intent', async (req, res) => {
             description: `Donation from ${firstName} ${lastName}`,
             receipt_email: email,
             metadata: {
+                processed_by: 'VegaDonationEngine',
+                app_version: '1.0.0',
                 donation_type: donationType,
                 donor_name: `${firstName} ${lastName}`,
                 donor_email: email,
@@ -225,6 +229,8 @@ app.post('/api/create-payment-intent', async (req, res) => {
             const product = await stripe.products.create({
                 name: 'Monthly Donation',
                 metadata: {
+                    processed_by: 'VegaDonationEngine',
+                    app_version: '1.0.0',
                     donor_name: `${firstName} ${lastName}`,
                     donor_email: email,
                     comment: comment || ''
@@ -246,6 +252,8 @@ app.post('/api/create-payment-intent', async (req, res) => {
                 payment_behavior: 'default_incomplete',
                 expand: ['latest_invoice.payment_intent'],
                 metadata: {
+                    processed_by: 'VegaDonationEngine',
+                    app_version: '1.0.0',
                     donation_type: 'monthly',
                     donor_name: `${firstName} ${lastName}`,
                     donor_email: email,
