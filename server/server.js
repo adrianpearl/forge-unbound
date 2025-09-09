@@ -48,6 +48,13 @@ app.get('/donate', (req, res) => {
         // Check for --preview parameter to enable preview mode (localhost only)
         const enablePreview = process.argv.includes('--preview');
         
+        // Detect environment type
+        const isLocalDev = host === 'localhost' && !process.env.RAILWAY_ENVIRONMENT;
+        const isRailwayDev = process.env.RAILWAY_ENVIRONMENT && process.env.NODE_ENV !== 'production';
+        const isProduction = process.env.NODE_ENV === 'production' || (process.env.RAILWAY_ENVIRONMENT && process.env.NODE_ENV === 'production');
+        const environmentType = isProduction ? 'production' : (isRailwayDev ? 'railway-dev' : 'local-dev');
+        const isTestMode = stripeKey.startsWith('pk_test_');
+        
         // Create the script injection
         const scriptInjection = `    <script>
         // Stripe publishable key injected by server (campaign-specific)
@@ -55,6 +62,14 @@ app.get('/donate', (req, res) => {
         console.log('Stripe key configured:', '${stripeKey.substring(0, 12)}...');
         // Preview mode control (injected by server)
         window.ENABLE_PREVIEW_MODE = ${enablePreview};
+        // Environment information (injected by server)
+        window.ENVIRONMENT_INFO = {
+            type: '${environmentType}',
+            isProduction: ${isProduction},
+            isTestMode: ${isTestMode},
+            host: '${host}',
+            port: ${port}
+        };
     </script>`;
         
         // Insert the script before the widget.js script
@@ -410,11 +425,27 @@ const host = (enableNetworkAccess || isProduction) ? '0.0.0.0' : 'localhost';
 
 // Start server
 app.listen(port, host, () => {
-    console.log(`🚀 Donation widget server running at http://${host}:${port}`);
-    console.log(`📝 Widget available at http://localhost:${port}`);
+    const environmentType = isProduction ? 'production' : (process.env.RAILWAY_ENVIRONMENT ? 'railway-dev' : 'local-dev');
+    const isTestMode = (process.env.STRIPE_PUBLISHABLE_KEY || '').startsWith('pk_test_');
+    
+    console.log('='.repeat(60));
+    console.log(`🚀 DONATION WIDGET SERVER STARTED`);
+    console.log('='.repeat(60));
+    console.log(`🎯 Environment: ${environmentType.toUpperCase()}`);
+    console.log(`🔑 Stripe Mode: ${isTestMode ? 'TEST' : 'LIVE'}`);
+    console.log(`🌍 Server: http://${host}:${port}`);
+    console.log(`📝 Widget: http://localhost:${port}`);
+    
+    if (!isProduction) {
+        console.log(`🚨 WARNING: This is a ${environmentType.replace('-', ' ').toUpperCase()} environment!`);
+        console.log(`📝 For production, visit: https://secure.votevega.nyc/donate`);
+    }
+    
     if (isProduction) {
         console.log(`🌐 Production mode: Server bound to ${host} for external access`);
     }
+    
+    console.log('='.repeat(60));
     
     // Show network access info only when --host is used
     if (enableNetworkAccess) {

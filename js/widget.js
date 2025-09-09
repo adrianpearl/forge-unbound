@@ -50,6 +50,9 @@ class DonationWidget {
             // Add development-only preview option
             this.addDevelopmentPreview();
 
+            // Add environment indicator for non-production environments
+            this.addEnvironmentIndicator();
+
             // Initial calculations
             this.updateTotals();
 
@@ -545,6 +548,74 @@ class DonationWidget {
         console.log('🛠️ Development preview button added (localhost only)');
     }
 
+    addEnvironmentIndicator() {
+        // Check if environment info is available
+        if (!window.ENVIRONMENT_INFO) {
+            return;
+        }
+
+        const env = window.ENVIRONMENT_INFO;
+        
+        // Only show indicator for non-production environments
+        if (env.isProduction) {
+            return;
+        }
+
+        // Log environment information
+        console.log('🛠️ Environment:', env.type);
+        console.log('🔑 Stripe mode:', env.isTestMode ? 'TEST' : 'LIVE');
+        
+        // Create environment indicator banner
+        const banner = document.createElement('div');
+        banner.id = 'environment-indicator';
+        
+        let bannerText = '';
+        let bannerColor = '';
+        
+        if (env.type === 'local-dev') {
+            bannerText = '🛠️ LOCAL DEVELOPMENT MODE';
+            bannerColor = '#1f2937'; // Dark gray
+        } else if (env.type === 'railway-dev') {
+            bannerText = '🚧 DEVELOPMENT ENVIRONMENT';
+            bannerColor = '#dc2626'; // Red
+        }
+        
+        if (env.isTestMode) {
+            bannerText += ' • STRIPE TEST MODE';
+        }
+        
+        banner.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: ${bannerColor};
+            color: white;
+            text-align: center;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 9999;
+            border-bottom: 2px solid rgba(255,255,255,0.2);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        `;
+        
+        banner.textContent = bannerText;
+        
+        // Insert banner at the top of the page
+        document.body.insertBefore(banner, document.body.firstChild);
+        
+        // Adjust body padding to account for banner
+        document.body.style.paddingTop = (banner.offsetHeight + 10) + 'px';
+        
+        // Add warning to page title for dev environments
+        if (!env.isProduction) {
+            document.title = '[DEV] ' + document.title;
+        }
+        
+        console.log(`🚨 Development environment indicator added: ${bannerText}`);
+    }
+
     previewConfirmationPage() {
         console.log('🎯 Previewing confirmation page with current form data');
 
@@ -685,7 +756,7 @@ class DonationWidget {
     }
 
     validateRequiredFields() {
-        const requiredFields = ['first-name', 'last-name', 'email', 'address', 'city', 'state', 'zip', 'occupation', 'employer'];
+        const requiredFields = ['first-name', 'last-name', 'email', 'phone', 'address', 'city', 'state', 'zip', 'occupation', 'employer'];
         return requiredFields.every(fieldId => {
             const field = document.getElementById(fieldId);
             return field.value.trim() !== '';
