@@ -294,6 +294,18 @@ class DonationWidget {
         return Math.round((amount * this.processingFeeRate + this.processingFeeFixed) * 100) / 100;
     }
 
+    // Calculate what total amount needs to be charged to net a specific amount after Stripe fees
+    calculateTotalForDesiredNet(desiredNetAmount) {
+        if (desiredNetAmount <= 0) return 0;
+        
+        // We need to solve: totalAmount - (totalAmount * rate + fixed) = desiredNetAmount
+        // Rearranging: totalAmount * (1 - rate) - fixed = desiredNetAmount
+        // So: totalAmount = (desiredNetAmount + fixed) / (1 - rate)
+        const totalAmount = (desiredNetAmount + this.processingFeeFixed) / (1 - this.processingFeeRate);
+        
+        return Math.round(totalAmount * 100) / 100;
+    }
+
     updateTotals() {
         const baseAmount = this.selectedAmount || this.customAmount || 0;
         let processingFeeAmount = 0;
@@ -310,20 +322,22 @@ class DonationWidget {
         }
 
         if (this.coverProcessingFee && baseAmount > 0) {
-            // Calculate the full processing fee
-            const fullProcessingFee = this.calculateProcessingFee(baseAmount);
+            // Calculate what total amount needs to be charged so that baseAmount is netted
+            const requiredTotalAmount = this.calculateTotalForDesiredNet(baseAmount);
+            const requiredProcessingFee = requiredTotalAmount - baseAmount;
 
-            // Check if covering the full fee would exceed the contribution limit
-            if (baseAmount + fullProcessingFee > this.maxContributionAmount) {
+            // Check if covering the required fee would exceed the contribution limit
+            if (requiredTotalAmount > this.maxContributionAmount) {
                 // Can only cover partial fee to stay within limit
-                const maxAllowedFee = this.maxContributionAmount - baseAmount;
-                processingFeeAmount = Math.max(0, maxAllowedFee);
+                const maxAllowedTotal = this.maxContributionAmount;
+                processingFeeAmount = maxAllowedTotal - baseAmount;
                 canCoverFee = false;
 
-                console.log(`Partial fee coverage: donation ${baseAmount}, max fee allowed ${maxAllowedFee}, actual fee ${fullProcessingFee}`);
+                console.log(`Partial fee coverage: donation ${baseAmount}, max total allowed ${maxAllowedTotal}, required total ${requiredTotalAmount}`);
             } else {
-                // Can cover the full fee
-                processingFeeAmount = fullProcessingFee;
+                // Can cover the full fee needed to net the desired amount
+                processingFeeAmount = requiredProcessingFee;
+                console.log(`Full fee coverage: donation ${baseAmount}, processing fee ${processingFeeAmount}, total ${requiredTotalAmount} will net ${baseAmount}`);
             }
         }
 
