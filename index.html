@@ -98,7 +98,7 @@
                     </div>
                     <div class="form-group">
                         <input type="tel" id="phone" placeholder="Phone (US or intnl)" maxlength="20"
-                            pattern="[0-9\-\(\)\+\s]*" title="Phone number (US or international format)" required>
+                            pattern="[0-9\-\(\)\+\s\.x,]{7,20}" title="Phone number must be at least 7 digits (US or international format)" required>
                     </div>
                 </div>
                 <div class="form-row">
@@ -167,7 +167,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <input type="text" id="zip" pattern="[0-9]{5}(-[0-9]{4})?" placeholder="ZIP Code" maxlength="10"
+                        <input type="text" id="zip" pattern="\d{5}(-\d{4})?" placeholder="ZIP Code" maxlength="10"
                             title="5-digit ZIP code or ZIP+4 format (12345 or 12345-6789)" required>
                     </div>
                 </div>

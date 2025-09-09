@@ -174,6 +174,21 @@ class DonationWidget {
         document.getElementById('phone').addEventListener('input', (e) => {
             this.handlePhoneInput(e);
         });
+        
+        // Phone validation on blur (when user leaves the field)
+        document.getElementById('phone').addEventListener('blur', (e) => {
+            this.handlePhoneBlur(e);
+        });
+        
+        // Email validation on blur
+        document.getElementById('email').addEventListener('blur', (e) => {
+            this.handleEmailBlur(e);
+        });
+        
+        // ZIP code validation on blur
+        document.getElementById('zip').addEventListener('blur', (e) => {
+            this.handleZipBlur(e);
+        });
 
         // ZIP code validation
         document.getElementById('zip').addEventListener('input', (e) => {
@@ -756,11 +771,224 @@ class DonationWidget {
     }
 
     validateRequiredFields() {
-        const requiredFields = ['first-name', 'last-name', 'email', 'phone', 'address', 'city', 'state', 'zip', 'occupation', 'employer'];
-        return requiredFields.every(fieldId => {
+        const basicRequiredFields = ['first-name', 'last-name', 'address', 'city', 'state', 'occupation', 'employer'];
+        
+        // Check basic required fields
+        const basicFieldsValid = basicRequiredFields.every(fieldId => {
             const field = document.getElementById(fieldId);
             return field.value.trim() !== '';
         });
+        
+        // Special validation for email, phone, and ZIP (don't show errors during form validation)
+        const emailValid = this.validateEmail(false);
+        const phoneValid = this.validatePhoneNumber(false);
+        const zipValid = this.validateZipCode(false);
+        
+        return basicFieldsValid && emailValid && phoneValid && zipValid;
+    }
+    
+    validatePhoneNumber(showErrors = true) {
+        const phoneField = document.getElementById('phone');
+        const phoneValue = phoneField.value.trim();
+        
+        // Clear any existing error if we're showing errors
+        if (showErrors) {
+            this.clearPhoneError();
+        }
+        
+        // Must not be empty
+        if (!phoneValue) {
+            if (showErrors) this.showPhoneError('Phone number is required');
+            return false;
+        }
+        
+        // Remove all non-digit characters to count digits
+        const digitsOnly = phoneValue.replace(/\D/g, '');
+        
+        // Must have at least 7 digits (minimum for any valid phone number)
+        if (digitsOnly.length < 7) {
+            if (showErrors) this.showPhoneError('Phone number must be at least 7 digits');
+            return false;
+        }
+        
+        // Must not exceed 15 digits (international standard)
+        if (digitsOnly.length > 15) {
+            if (showErrors) this.showPhoneError('Phone number too long (maximum 15 digits)');
+            return false;
+        }
+        
+        // Basic format validation - must contain only allowed characters
+        const validPattern = /^[\d\s\-\(\)\+\.x\,]+$/;
+        if (!validPattern.test(phoneValue)) {
+            if (showErrors) this.showPhoneError('Phone number contains invalid characters');
+            return false;
+        }
+        
+        return true;
+    }
+    
+    validateEmail(showErrors = true) {
+        const emailField = document.getElementById('email');
+        const emailValue = emailField.value.trim();
+        
+        // Clear any existing error if we're showing errors
+        if (showErrors) {
+            this.clearEmailError();
+        }
+        
+        // Must not be empty
+        if (!emailValue) {
+            if (showErrors) this.showEmailError('Email address is required');
+            return false;
+        }
+        
+        // Basic email format validation
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(emailValue)) {
+            if (showErrors) this.showEmailError('Please enter a valid email address');
+            return false;
+        }
+        
+        // Check for common typos in domain
+        const commonDomainTypos = {
+            'gmail.co': 'gmail.com',
+            'gmail.cm': 'gmail.com',
+            'gmial.com': 'gmail.com',
+            'yahoo.co': 'yahoo.com',
+            'yahoo.cm': 'yahoo.com',
+            'hotmail.co': 'hotmail.com',
+            'hotmail.cm': 'hotmail.com'
+        };
+        
+        const domain = emailValue.split('@')[1];
+        if (commonDomainTypos[domain]) {
+            if (showErrors) {
+                this.showEmailError(`Did you mean ${emailValue.split('@')[0]}@${commonDomainTypos[domain]}?`);
+            }
+            return false;
+        }
+        
+        return true;
+    }
+    
+    validateZipCode(showErrors = true) {
+        const zipField = document.getElementById('zip');
+        const zipValue = zipField.value.trim();
+        
+        // Clear any existing error if we're showing errors
+        if (showErrors) {
+            this.clearZipError();
+        }
+        
+        // Must not be empty
+        if (!zipValue) {
+            if (showErrors) this.showZipError('ZIP code is required');
+            return false;
+        }
+        
+        // Remove hyphens for length check
+        const zipDigits = zipValue.replace(/[^0-9]/g, '');
+        
+        // Must be either 5 digits or 9 digits (ZIP+4)
+        if (zipDigits.length !== 5 && zipDigits.length !== 9) {
+            if (showErrors) this.showZipError('ZIP code must be 5 digits (12345) or 9 digits (12345-6789)');
+            return false;
+        }
+        
+        // Validate format
+        const zipPattern = /^\d{5}(-\d{4})?$/;
+        if (!zipPattern.test(zipValue)) {
+            if (showErrors) this.showZipError('ZIP code format invalid. Use 12345 or 12345-6789');
+            return false;
+        }
+        
+        return true;
+    }
+    
+    showPhoneError(message) {
+        // Find or create phone error element
+        let errorElement = document.getElementById('phone-error');
+        if (!errorElement) {
+            errorElement = document.createElement('div');
+            errorElement.id = 'phone-error';
+            errorElement.className = 'field-error-message';
+            errorElement.style.cssText = `
+                color: #dc2626;
+                font-size: 12px;
+                margin-top: 4px;
+                display: block;
+            `;
+            
+            // Insert after the phone input
+            const phoneInput = document.getElementById('phone');
+            phoneInput.parentNode.insertBefore(errorElement, phoneInput.nextSibling);
+        }
+        
+        errorElement.textContent = message;
+        errorElement.style.display = 'block';
+    }
+    
+    clearPhoneError() {
+        const errorElement = document.getElementById('phone-error');
+        if (errorElement) {
+            errorElement.style.display = 'none';
+        }
+    }
+    
+    showEmailError(message) {
+        let errorElement = document.getElementById('email-error');
+        if (!errorElement) {
+            errorElement = document.createElement('div');
+            errorElement.id = 'email-error';
+            errorElement.className = 'field-error-message';
+            errorElement.style.cssText = `
+                color: #dc2626;
+                font-size: 12px;
+                margin-top: 4px;
+                display: block;
+            `;
+            
+            const emailInput = document.getElementById('email');
+            emailInput.parentNode.insertBefore(errorElement, emailInput.nextSibling);
+        }
+        
+        errorElement.textContent = message;
+        errorElement.style.display = 'block';
+    }
+    
+    clearEmailError() {
+        const errorElement = document.getElementById('email-error');
+        if (errorElement) {
+            errorElement.style.display = 'none';
+        }
+    }
+    
+    showZipError(message) {
+        let errorElement = document.getElementById('zip-error');
+        if (!errorElement) {
+            errorElement = document.createElement('div');
+            errorElement.id = 'zip-error';
+            errorElement.className = 'field-error-message';
+            errorElement.style.cssText = `
+                color: #dc2626;
+                font-size: 12px;
+                margin-top: 4px;
+                display: block;
+            `;
+            
+            const zipInput = document.getElementById('zip');
+            zipInput.parentNode.insertBefore(errorElement, zipInput.nextSibling);
+        }
+        
+        errorElement.textContent = message;
+        errorElement.style.display = 'block';
+    }
+    
+    clearZipError() {
+        const errorElement = document.getElementById('zip-error');
+        if (errorElement) {
+            errorElement.style.display = 'none';
+        }
     }
 
     async handleSubmit() {
@@ -945,7 +1173,28 @@ class DonationWidget {
             input.value = formattedValue;
         }
 
+        // Clear any existing phone error when user is typing
+        this.clearPhoneError();
+        
         // Update button state
+        this.updateDonateButton();
+    }
+    
+    handlePhoneBlur(event) {
+        // Validate phone number and show errors when user leaves the field
+        this.validatePhoneNumber(true);
+        this.updateDonateButton();
+    }
+    
+    handleEmailBlur(event) {
+        // Validate email and show errors when user leaves the field
+        this.validateEmail(true);
+        this.updateDonateButton();
+    }
+    
+    handleZipBlur(event) {
+        // Validate ZIP code and show errors when user leaves the field
+        this.validateZipCode(true);
         this.updateDonateButton();
     }
 
