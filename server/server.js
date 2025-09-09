@@ -6,6 +6,11 @@ const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
 
+// Read application info from package.json
+const packageInfo = require('../package.json');
+const APP_NAME = 'VegaDonationEngine';
+const APP_VERSION = packageInfo.version;
+
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -165,8 +170,8 @@ app.post('/api/create-payment-intent', async (req, res) => {
                     country: 'US'
                 },
                 metadata: {
-                    processed_by: 'VegaDonationEngine',
-                    app_version: '1.0.0',
+                    processed_by: APP_NAME,
+                    app_version: APP_VERSION,
                     occupation: occupation || '',
                     employer: employer || '',
                     comment: comment || '',
@@ -199,8 +204,8 @@ app.post('/api/create-payment-intent', async (req, res) => {
             description: `Donation from ${firstName} ${lastName}`,
             receipt_email: email,
             metadata: {
-                processed_by: 'VegaDonationEngine',
-                app_version: '1.0.0',
+                processed_by: APP_NAME,
+                app_version: APP_VERSION,
                 donation_type: donationType,
                 donor_name: `${firstName} ${lastName}`,
                 donor_email: email,
@@ -229,8 +234,8 @@ app.post('/api/create-payment-intent', async (req, res) => {
             const product = await stripe.products.create({
                 name: 'Monthly Donation',
                 metadata: {
-                    processed_by: 'VegaDonationEngine',
-                    app_version: '1.0.0',
+                    processed_by: APP_NAME,
+                    app_version: APP_VERSION,
                     donor_name: `${firstName} ${lastName}`,
                     donor_email: email,
                     comment: comment || ''
@@ -252,8 +257,8 @@ app.post('/api/create-payment-intent', async (req, res) => {
                 payment_behavior: 'default_incomplete',
                 expand: ['latest_invoice.payment_intent'],
                 metadata: {
-                    processed_by: 'VegaDonationEngine',
-                    app_version: '1.0.0',
+                    processed_by: APP_NAME,
+                    app_version: APP_VERSION,
                     donation_type: 'monthly',
                     donor_name: `${firstName} ${lastName}`,
                     donor_email: email,
