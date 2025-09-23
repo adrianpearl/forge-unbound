@@ -447,7 +447,6 @@ app.listen(port, host, () => {
     
     if (!isProduction) {
         console.log(`🚨 WARNING: This is a ${environmentType.replace('-', ' ').toUpperCase()} environment!`);
-        console.log(`📝 For production, visit: https://secure.votevega.nyc/donate`);
     }
     
     if (isProduction) {

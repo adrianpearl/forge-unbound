@@ -4,6 +4,7 @@ import DonationWidget from './components/DonationWidget';
 import { PrivacyPolicy } from './components/PrivacyPolicy';
 import { TermsOfService } from './components/TermsOfService';
 import { Footer } from './components/Footer';
+import { CampaignProvider, useCampaign } from './contexts/CampaignContext';
 import { AlertTriangle, Code } from 'lucide-react';
 
 // Development mode banner component
@@ -57,20 +58,23 @@ function parseUrlParameters(searchParams: URLSearchParams) {
 function HomePage() {
     const [searchParams] = useSearchParams();
     const { initialAmount } = parseUrlParameters(searchParams);
+    const campaign = useCampaign();
     
     return (
         <div className="max-w-xl mx-auto px-6">
             <div className="logo max-w-56 my-4 mx-auto">
-                <a href="https://votevega.nyc/">
-                    <img src="/assets/vega-red-black.png" alt="Vega for Congress" />
+                <a href={campaign.website}>
+                    <img src={campaign.logoUrl} alt={campaign.logoAlt} />
                 </a>
             </div>
             <div className="page-header py-4">
-                <h1 className="text-3xl/relaxed font-semibold li">Support our campaign.</h1>
-                <p className="max-w-2xl">Help keep us independent. We take no corporate money. We're only backed by people like you.</p>
+                <h1 className="text-3xl/relaxed font-semibold li">{campaign.tagline}</h1>
+                <p className="max-w-2xl">
+                    {campaign.customFooterText || 'Help keep us independent. We take no corporate money. We\'re only backed by people like you.'}
+                </p>
             </div>
             <DonationWidget initialAmount={initialAmount} />
-            <footer className="text-left p-5 border-t border-border text-xs leading-relaxed text-foreground mt-8">
+            <footer className="text-left p-5 border-t border-border text-xs leading-relaxed text-foreground">
                 <div className="mb-5">
                     <h3 className="text-base font-bold mb-2.5">Contribution rules</h3>
                     <ul className="list-disc list-inside space-y-1.5 text-sm">
@@ -90,7 +94,7 @@ function HomePage() {
 
                 <div className="mb-4">
                     <p className="mb-2.5">
-                        <strong>Platform Disclaimer:</strong> This donation platform is paid for by Vega For Congress and not authorized by any other candidate or candidate committee. For questions about donations, please contact <a href="mailto:info@votevega.nyc">info@votevega.nyc</a>.
+                        <strong>Platform Disclaimer:</strong> This donation platform is paid for by {campaign.legalName} and not authorized by any other candidate or candidate committee. For questions about donations, please contact <a href={`mailto:${campaign.contactEmail}`}>{campaign.contactEmail}</a>.
                     </p>
                 </div>
 
@@ -109,14 +113,16 @@ function HomePage() {
 // Main App component with routing
 function App() {
     return (
-        <Router>
-            <DevBanner />
-            <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/privacy" element={<PrivacyPolicy />} />
-                <Route path="/terms" element={<TermsOfService />} />
-            </Routes>
-        </Router>
+        <CampaignProvider>
+            <Router>
+                <DevBanner />
+                <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/privacy" element={<PrivacyPolicy />} />
+                    <Route path="/terms" element={<TermsOfService />} />
+                </Routes>
+            </Router>
+        </CampaignProvider>
     );
 }
 

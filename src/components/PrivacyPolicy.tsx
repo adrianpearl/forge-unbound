@@ -3,16 +3,18 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { Footer } from './Footer';
 import { Link } from 'react-router-dom';
+import { useCampaign } from '../contexts/CampaignContext';
 
 export function PrivacyPolicy() {
+  const campaign = useCampaign();
   return (
     <div className="max-w-4xl mx-auto px-6 py-8">
       {/* Logo */}
       <div className="text-center mb-8">
-        <a href="https://votevega.nyc/" className="inline-block">
+        <a href={campaign.website} className="inline-block">
           <img
-            src="/assets/vega-red-black.png"
-            alt="Vega for Congress"
+            src={campaign.logoUrl}
+            alt={campaign.logoAlt}
             className="max-w-56 h-auto mx-auto"
           />
         </a>
@@ -44,7 +46,7 @@ export function PrivacyPolicy() {
           <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6 rounded-r-md">
             <p className="font-semibold text-blue-900 mb-1">Important Notice:</p>
             <p className="text-blue-800 text-sm">
-              This Privacy Policy explains how Vega for Congress collects, uses, and protects your personal information when you make donations through our platform. Political contributions are subject to federal reporting requirements that may make some of your information public.
+              This Privacy Policy explains how {campaign.legalName} collects, uses, and protects your personal information when you make donations through our platform. Political contributions are subject to federal reporting requirements that may make some of your information public.
             </p>
           </div>
 
@@ -207,11 +209,11 @@ export function PrivacyPolicy() {
 
             <div className="bg-muted border-l-4 border-foreground p-4 rounded-r-md">
               <div className="space-y-1">
-                <p className="font-semibold">Privacy Officer</p>
-                <p>Email: info@votevega.nyc</p>
-                <p>Mail: Vega for Congress</p>
-                <p>1157 INTERVALE AVENUE APT. 2D</p>
-                <p>BRONX, NY 10459</p>
+                <p className="font-semibold">{campaign.privacyOfficer || 'Privacy Officer'}</p>
+                <p>Email: {campaign.privacyOfficerEmail}</p>
+                <p>Mail: {campaign.legalName}</p>
+                <p>{campaign.address}</p>
+                <p>{campaign.city}, {campaign.state} {campaign.zipCode}</p>
               </div>
             </div>
           </div>

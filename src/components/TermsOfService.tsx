@@ -3,16 +3,18 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { Footer } from './Footer';
 import { Link } from 'react-router-dom';
+import { useCampaign } from '../contexts/CampaignContext';
 
 export function TermsOfService() {
+  const campaign = useCampaign();
   return (
     <div className="max-w-4xl mx-auto px-6 py-8">
       {/* Logo */}
       <div className="text-center mb-8">
-        <a href="https://votevega.nyc/" className="inline-block">
+        <a href={campaign.website} className="inline-block">
           <img
-            src="/assets/vega-red-black.png"
-            alt="Vega for Congress"
+            src={campaign.logoUrl}
+            alt={campaign.logoAlt}
             className="max-w-56 h-auto mx-auto"
           />
         </a>
@@ -46,7 +48,7 @@ export function TermsOfService() {
               1. Agreement to Terms
             </h2>
             <p className="text-muted-foreground">
-              By accessing or using the Vega for Congress donation platform (the "Service"), you agree to be bound by these Terms of Service ("Terms"). If you disagree with any part of these terms, you may not access the Service.
+              By accessing or using the {campaign.legalName} donation platform (the "Service"), you agree to be bound by these Terms of Service ("Terms"). If you disagree with any part of these terms, you may not access the Service.
             </p>
           </div>
 
@@ -56,7 +58,7 @@ export function TermsOfService() {
               2. Description of Service
             </h2>
             <p className="text-muted-foreground mb-4">
-              The Service is a donation processing platform operated by Vega for Congress, a federal political committee registered with the Federal Election Commission (FEC). The Service allows eligible donors to make contributions to support the congressional campaign of Jose Vega.
+              The Service is a donation processing platform operated by {campaign.legalName}, a federal political committee registered with the Federal Election Commission (FEC). The Service allows eligible donors to make contributions to support the campaign of {campaign.name}.
             </p>
 
             <h3 className="text-lg font-semibold text-foreground mt-6 mb-3">2.1 Donation Processing</h3>
@@ -142,7 +144,7 @@ export function TermsOfService() {
             <h3 className="text-lg font-semibold text-foreground mt-6 mb-3">6.2 Refund Policy</h3>
             <ul className="list-disc list-inside space-y-1 text-muted-foreground ml-4">
               <li>Contribution refunds are processed in accordance with FEC regulations</li>
-              <li>Refund requests must be submitted in writing to info@votevega.nyc</li>
+              <li>Refund requests must be submitted in writing to {campaign.contactEmail}</li>
               <li>Processing fees are generally non-refundable</li>
               <li>We reserve the right to refund contributions that violate federal election law</li>
             </ul>
@@ -202,7 +204,7 @@ export function TermsOfService() {
 
             <h3 className="text-lg font-semibold text-foreground mt-6 mb-3">10.2 Limitation of Liability</h3>
             <p className="text-muted-foreground">
-              To the fullest extent permitted by law, Vega for Congress shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of the Service.
+              To the fullest extent permitted by law, {campaign.legalName} shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of the Service.
             </p>
           </div>
 
@@ -216,10 +218,10 @@ export function TermsOfService() {
             </p>
             <div className="bg-muted border-l-4 border-foreground p-4 rounded-r-md">
               <div className="space-y-1">
-                <p>Email: info@votevega.nyc</p>
-                <p>Mail: Vega for Congress</p>
-                <p>1157 INTERVALE AVENUE APT. 2D</p>
-                <p>BRONX, NY 10459</p>
+                <p>Email: {campaign.contactEmail}</p>
+                <p>Mail: {campaign.legalName}</p>
+                <p>{campaign.address}</p>
+                <p>{campaign.city}, {campaign.state} {campaign.zipCode}</p>
               </div>
             </div>
           </div>

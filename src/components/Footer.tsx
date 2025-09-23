@@ -1,9 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useCampaign } from '../contexts/CampaignContext';
 
 export function Footer() {
+  const campaign = useCampaign();
   return (
-    <footer className="mt-8 py-6 border-t text-center">
+    <footer className="py-6 border-t text-center">
       <div className="space-x-3 mb-4">
         <Link to="/privacy">
           Privacy Policy
@@ -14,7 +16,7 @@ export function Footer() {
         </Link>
       </div>
       <p className="text-xs text-muted-foreground">
-        Paid for by Vega for Congress. Not authorized by any candidate or candidate's committee.
+        Paid for by {campaign.legalName}. Not authorized by any candidate or candidate's committee.
       </p>
     </footer>
   );

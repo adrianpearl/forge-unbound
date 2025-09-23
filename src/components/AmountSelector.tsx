@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-
-const PRESET_AMOUNTS = [25, 50, 100, 250, 500, 1000, 3500];
+import { useCampaign } from '../contexts/CampaignContext';
 
 interface AmountSelectorProps {
   onAmountChange?: (amount: number, isCustom: boolean) => void;
@@ -12,6 +11,9 @@ interface AmountSelectorProps {
 }
 
 export function AmountSelector({ onAmountChange, selectedAmount, customAmount, initialAmount }: AmountSelectorProps) {
+  const campaign = useCampaign();
+  const PRESET_AMOUNTS = campaign.defaultAmounts;
+  
   // Determine initial state based on initialAmount from URL parameters
   const getInitialState = () => {
     if (initialAmount && initialAmount > 0) {
@@ -44,11 +46,11 @@ export function AmountSelector({ onAmountChange, selectedAmount, customAmount, i
     const value = e.target.value;
     const numericValue = parseFloat(value) || 0;
     
-    // Enforce maximum contribution limit of $3,500
-    if (numericValue > 3500) {
-      setCustomValue('3500');
+    // Enforce maximum contribution limit
+    if (numericValue > campaign.maxContribution) {
+      setCustomValue(campaign.maxContribution.toString());
       setActiveAmount(null);
-      onAmountChange?.(3500, true);
+      onAmountChange?.(campaign.maxContribution, true);
       return;
     }
     
@@ -84,7 +86,7 @@ export function AmountSelector({ onAmountChange, selectedAmount, customAmount, i
             type="number"
             placeholder="0.00"
             min="1"
-            max="3500"
+            max={campaign.maxContribution.toString()}
             step="0.01"
             value={customValue}
             onChange={handleCustomAmountChange}

@@ -12,6 +12,9 @@
     "dev:ui": "bunx vite",
     "build": "bunx vite build",
     "build:prod": "bun run build && bun start",
+    "build:johnson": "bunx vite build --mode johnson",
+    "dev:johnson": "bunx vite build --mode johnson && bun --watch server/server.cjs",
+    "restore:env": "echo 'No backup to restore (mode-based envs)'",
     "install:bun": "bun install",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
