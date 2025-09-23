@@ -1,0 +1,33 @@
+{
+  "name": "Sarah Johnson",
+  "fullName": "Sarah Johnson for Senate",
+  "tagline": "Fighting for working families across our great state.",
+  "headerContent": "# Fighting for working families across our great state.\n\nJoin our **grassroots movement** to bring real change to Washington. Every dollar helps us reach more voters and build the coalition we need to win.\n\n## Our Platform\n\n- ✅ **Universal Healthcare** - Quality care for all Americans\n- 💼 **Good-Paying Jobs** - Support unions and worker rights  \n- 🌱 **Clean Energy Future** - Combat climate change with green jobs\n- 📚 **Affordable Education** - Make college accessible to everyone\n\n> \"We're not just running a campaign — we're building a movement that puts working families first.\"\n\n*Together, we can create the change our communities deserve.*",
+  "website": "https://sarahjohnsonforsenate.com/",
+  "contactEmail": "hello@sarahjohnsonforsenate.com",
+  
+  "address": "4500 Democracy Boulevard",
+  "city": "Springfield",
+  "state": "IL",
+  "zipCode": "62701",
+  
+  "logoUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a1/Campaign_%28magazine%29_logo.svg",
+  "logoAlt": "Sarah Johnson for Senate",
+  "faviconUrl": "/assets/johnson-favicon.ico",
+  "primaryColor": "#1e40af",
+  "secondaryColor": "#1e3a8a",
+  
+  "pageTitle": "Donate | Sarah Johnson for Senate",
+  "metaDescription": "Join Sarah Johnson's fight for working families - donate today",
+  
+  "legalName": "Sarah Johnson for Senate Committee",
+  "fecId": "C00789012",
+  "privacyOfficer": "Campaign Privacy Officer",
+  "privacyOfficerEmail": "privacy@sarahjohnsonforsenate.com",
+  
+  "defaultAmounts": [15, 35, 75, 150, 350, 750, 2900],
+  "maxContribution": 2900,
+  
+  "customFooterText": "Join our grassroots movement to bring real change to Washington. Every dollar helps us reach more voters and build the coalition we need to win.",
+  "donationSuccessMessage": "Thank you for standing with Sarah! Together, we're building a campaign that puts working families first."
+}

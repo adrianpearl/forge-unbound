@@ -3,6 +3,7 @@ export interface CampaignConfig {
   name: string;
   fullName: string;
   tagline: string;
+  headerContent: string; // Markdown content for the header
   website: string;
   contactEmail: string;
   
@@ -38,7 +39,7 @@ export interface CampaignConfig {
   donationSuccessMessage?: string;
 }
 
-// Parse environment variables into a typed CampaignConfig
+// Parse environment variables into a typed CampaignConfig (legacy support)
 export function parseCampaignConfig(): CampaignConfig {
   const env = import.meta.env;
   
@@ -46,6 +47,7 @@ export function parseCampaignConfig(): CampaignConfig {
     name: env.VITE_CAMPAIGN_NAME || 'Your Campaign',
     fullName: env.VITE_CAMPAIGN_FULL_NAME || 'Your Campaign',
     tagline: env.VITE_CAMPAIGN_TAGLINE || 'Support our campaign.',
+    headerContent: env.VITE_CAMPAIGN_HEADER_CONTENT || `# ${env.VITE_CAMPAIGN_TAGLINE || 'Support our campaign.'}\n\n${env.VITE_CAMPAIGN_FOOTER_TEXT || 'Help support our campaign.'}`,
     website: env.VITE_CAMPAIGN_WEBSITE || 'https://example.com',
     contactEmail: env.VITE_CAMPAIGN_CONTACT_EMAIL || 'info@example.com',
     
@@ -76,4 +78,14 @@ export function parseCampaignConfig(): CampaignConfig {
     customFooterText: env.VITE_CAMPAIGN_FOOTER_TEXT,
     donationSuccessMessage: env.VITE_CAMPAIGN_SUCCESS_MESSAGE,
   };
+}
+
+// Load campaign configuration from JSON file
+export async function loadCampaignConfig(campaignId: string): Promise<CampaignConfig> {
+  const response = await fetch(`/config/${campaignId}.json`);
+  if (!response.ok) {
+    throw new Error(`Failed to load campaign config: ${response.status}`);
+  }
+  const config = await response.json();
+  return config as CampaignConfig;
 }

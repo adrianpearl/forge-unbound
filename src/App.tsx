@@ -1,14 +1,21 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, useSearchParams } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useSearchParams, useLocation } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
 import DonationWidget from './components/DonationWidget';
 import { PrivacyPolicy } from './components/PrivacyPolicy';
 import { TermsOfService } from './components/TermsOfService';
 import { Footer } from './components/Footer';
 import { CampaignProvider, useCampaign } from './contexts/CampaignContext';
+import { PreviewPage } from './components/admin/PreviewPage';
 import { AlertTriangle, Code } from 'lucide-react';
 
 // Development mode banner component
 function DevBanner() {
+    const location = useLocation();
+    
+    // Don't show dev banner on admin routes
+    if (location.pathname.startsWith('/admin')) return null;
+    
     // Only show in development mode
     const isDev = import.meta.env.DEV || window.location.hostname === 'localhost';
     const stripeKey = window.STRIPE_PUBLISHABLE_KEY || '';
@@ -68,10 +75,9 @@ function HomePage() {
                 </a>
             </div>
             <div className="page-header py-4">
-                <h1 className="text-3xl/relaxed font-semibold li">{campaign.tagline}</h1>
-                <p className="max-w-2xl">
-                    {campaign.customFooterText || 'Help keep us independent. We take no corporate money. We\'re only backed by people like you.'}
-                </p>
+                <div className="prose prose-gray max-w-2xl">
+                    <ReactMarkdown>{campaign.headerContent}</ReactMarkdown>
+                </div>
             </div>
             <DonationWidget initialAmount={initialAmount} />
             <footer className="text-left p-5 border-t border-border text-xs leading-relaxed text-foreground">
@@ -120,6 +126,7 @@ function App() {
                     <Route path="/" element={<HomePage />} />
                     <Route path="/privacy" element={<PrivacyPolicy />} />
                     <Route path="/terms" element={<TermsOfService />} />
+                    <Route path="/admin/preview" element={<PreviewPage />} />
                 </Routes>
             </Router>
         </CampaignProvider>

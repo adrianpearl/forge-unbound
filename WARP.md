@@ -11,31 +11,31 @@ This is a political campaign donation widget built with Node.js, Express, and St
 ### Development
 ```bash
 # Start development server with auto-restart
-npm run dev
+bun run dev
 
 # Start development server with network access (for mobile testing)
-npm run dev:host
+bun run dev:host
 
 # Start development server with preview mode enabled
-npm run dev:preview
+bun run dev:preview
 
 # Start development server with both network access and preview mode
-npm run dev:full
+bun run dev:full
 ```
 
 ### Production
 ```bash
 # Start production server
-npm start
+bun start
 
 # Start production server with network access
-npm run start:host
+bun run start:host
 
 # Start production server with preview mode
-npm run start:preview
+bun run start:preview
 
 # Start production server with both network access and preview mode
-npm run start:full
+bun run start:full
 ```
 
 ### Environment Setup
@@ -44,7 +44,7 @@ npm run start:full
 cp .env.example .env
 
 # Install dependencies
-npm install
+bun install
 ```
 
 ### Testing
@@ -127,7 +127,7 @@ donation-widget/
 ### Server Command Line Options
 - `--host` - Enable network access (bind to 0.0.0.0)
 - `--preview` - Enable preview mode features
-- Can be combined: `npm run dev:full` uses both options
+- Can be combined: `bun run dev:full` uses both options
 
 ## Stripe Integration Details
 

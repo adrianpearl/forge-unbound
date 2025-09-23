@@ -29,6 +29,9 @@ const distPath = path.join(__dirname, '..', 'dist');
 app.use('/assets', express.static(path.join(distPath, 'assets')));
 app.use('/assets', express.static(path.join(__dirname, '..', 'assets')));
 
+// Serve public directory for JSON config files
+app.use(express.static(path.join(__dirname, '..', 'public')));
+
 // React app with Stripe key injection
 const serveReactApp = (req, res) => {
     const reactHtmlPath = path.join(distPath, 'index.html');
