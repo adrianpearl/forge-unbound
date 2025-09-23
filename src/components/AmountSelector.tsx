@@ -8,11 +8,31 @@ interface AmountSelectorProps {
   onAmountChange?: (amount: number, isCustom: boolean) => void;
   selectedAmount?: number;
   customAmount?: number;
+  initialAmount?: number;
 }
 
-export function AmountSelector({ onAmountChange, selectedAmount, customAmount }: AmountSelectorProps) {
-  const [activeAmount, setActiveAmount] = useState<number | null>(selectedAmount || null);
-  const [customValue, setCustomValue] = useState<string>(customAmount ? customAmount.toString() : '');
+export function AmountSelector({ onAmountChange, selectedAmount, customAmount, initialAmount }: AmountSelectorProps) {
+  // Determine initial state based on initialAmount from URL parameters
+  const getInitialState = () => {
+    if (initialAmount && initialAmount > 0) {
+      // Check if initial amount matches a preset
+      if (PRESET_AMOUNTS.includes(initialAmount)) {
+        return { activeAmount: initialAmount, customValue: '' };
+      } else {
+        // Use as custom amount
+        return { activeAmount: null, customValue: initialAmount.toFixed(2) };
+      }
+    }
+    // Fallback to provided props or defaults
+    return {
+      activeAmount: selectedAmount || null,
+      customValue: customAmount ? customAmount.toString() : ''
+    };
+  };
+  
+  const initialState = getInitialState();
+  const [activeAmount, setActiveAmount] = useState<number | null>(initialState.activeAmount);
+  const [customValue, setCustomValue] = useState<string>(initialState.customValue);
 
   const handlePresetClick = (amount: number) => {
     setActiveAmount(amount);

@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useSearchParams } from 'react-router-dom';
 import DonationWidget from './components/DonationWidget';
 import { PrivacyPolicy } from './components/PrivacyPolicy';
 import { TermsOfService } from './components/TermsOfService';
@@ -34,8 +34,30 @@ function DevBanner() {
     );
 }
 
-// Home page component
+// Parse URL parameters for donation pre-filling
+function parseUrlParameters(searchParams: URLSearchParams) {
+    const amountParam = searchParams.get('amount');
+    
+    if (amountParam) {
+        const amountInCents = parseInt(amountParam);
+        const amountInDollars = amountInCents / 100;
+        
+        if (amountInCents > 0 && amountInDollars >= 1) {
+            console.log(`Pre-filling amount from URL: $${amountInDollars} (${amountInCents} cents)`);
+            return { initialAmount: amountInDollars };
+        } else {
+            console.warn(`Invalid amount parameter: ${amountParam}. Amount must be at least 100 cents ($1.00)`);
+        }
+    }
+    
+    return { initialAmount: 0 };
+}
+
+// Home page component that handles URL parameters
 function HomePage() {
+    const [searchParams] = useSearchParams();
+    const { initialAmount } = parseUrlParameters(searchParams);
+    
     return (
         <div className="max-w-xl mx-auto px-6">
             <div className="logo max-w-56 my-4 mx-auto">
@@ -47,7 +69,7 @@ function HomePage() {
                 <h1 className="text-3xl/relaxed font-semibold li">Support our campaign.</h1>
                 <p className="max-w-2xl">Help keep us independent. We take no corporate money. We're only backed by people like you.</p>
             </div>
-            <DonationWidget />
+            <DonationWidget initialAmount={initialAmount} />
             <footer className="text-left p-5 border-t border-border text-xs leading-relaxed text-foreground mt-8">
                 <div className="mb-5">
                     <h3 className="text-base font-bold mb-2.5">Contribution rules</h3>

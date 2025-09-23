@@ -6,7 +6,11 @@ import { ProcessingFee } from './ProcessingFee';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, Mail, Heart, RotateCcw, CreditCard, Info } from 'lucide-react';
 
-function DonationWidget() {
+interface DonationWidgetProps {
+  initialAmount?: number;
+}
+
+function DonationWidget({ initialAmount = 0 }: DonationWidgetProps) {
   const formRef = useRef(null);
   const cardElementRef = useRef(null);
   const [stripe, setStripe] = useState(null);
@@ -14,7 +18,7 @@ function DonationWidget() {
   const cardRef = useRef(null);
   
   // Form state
-  const [donationAmount, setDonationAmount] = useState(0);
+  const [donationAmount, setDonationAmount] = useState(initialAmount);
   const [donationType, setDonationType] = useState<'monthly' | 'one-time'>('monthly');
   const [processingFeeAmount, setProcessingFeeAmount] = useState(0);
   const [coverProcessingFee, setCoverProcessingFee] = useState(true);
@@ -263,10 +267,13 @@ function DonationWidget() {
   return (
     <div className="donation-widget space-y-6 max-w-2xl mx-auto py-6">
       {/* Amount Selection Section */}
-      <AmountSelector onAmountChange={(amount, isCustom) => {
-        setDonationAmount(amount);
-        console.log('Amount selected:', amount, 'Custom:', isCustom);
-      }} />
+      <AmountSelector 
+        initialAmount={initialAmount}
+        onAmountChange={(amount, isCustom) => {
+          setDonationAmount(amount);
+          console.log('Amount selected:', amount, 'Custom:', isCustom);
+        }} 
+      />
       
       {/* Donation Type Section */}
       <DonationType onTypeChange={(type) => {
