@@ -32,8 +32,8 @@ export function AdminLayout({ children, pageTitle = "Admin Dashboard", breadcrum
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="/admin">
-                  Admin Dashboard
+                <BreadcrumbLink href="/">
+                  Dashboard
                 </BreadcrumbLink>
               </BreadcrumbItem>
               {breadcrumbs.map((breadcrumb, index) => (

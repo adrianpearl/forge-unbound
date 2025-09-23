@@ -3,10 +3,10 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { Footer } from './Footer';
 import { Link } from 'react-router-dom';
-import { useCampaign } from '../contexts/CampaignContext';
+import { useCampaignConfig } from '@/contexts/CampaignContext';
 
 export function TermsOfService() {
-  const campaign = useCampaign();
+  const campaign = useCampaignConfig();
   return (
     <div className="max-w-4xl mx-auto px-6 py-8">
       {/* Logo */}

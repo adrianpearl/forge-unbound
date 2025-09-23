@@ -39,9 +39,9 @@ const data = {
   navMain: [
     {
       title: "Preview",
-      url: "/admin/preview",
+      url: "/",
       icon: Eye,
-      isActive: true,
+      isActive: false,
       items: [],
     },
   ],

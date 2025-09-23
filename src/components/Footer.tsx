@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useCampaign } from '../contexts/CampaignContext';
+import { useCampaignConfig } from '../contexts/CampaignContext';
 
 export function Footer() {
-  const campaign = useCampaign();
+  const campaign = useCampaignConfig();
   return (
     <footer className="py-6 border-t text-center">
       <div className="space-x-3 mb-4">

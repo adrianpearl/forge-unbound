@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useCampaign } from '../contexts/CampaignContext';
+import { useCampaignConfig } from '../contexts/CampaignContext';
 
 interface AmountSelectorProps {
   onAmountChange?: (amount: number, isCustom: boolean) => void;
@@ -11,7 +11,7 @@ interface AmountSelectorProps {
 }
 
 export function AmountSelector({ onAmountChange, selectedAmount, customAmount, initialAmount }: AmountSelectorProps) {
-  const campaign = useCampaign();
+  const campaign = useCampaignConfig();
   const PRESET_AMOUNTS = campaign.defaultAmounts;
   
   // Determine initial state based on initialAmount from URL parameters
