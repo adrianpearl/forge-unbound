@@ -22,43 +22,44 @@ const stripe = require('stripe')(process.env.STRIPE_RESTRICTED_KEY);
 app.use(cors());
 app.use(express.json());
 
-// Check if React build exists
+// React-only server - no more vanilla fallbacks!
 const distPath = path.join(__dirname, '..', 'dist');
-const reactBuildExists = fs.existsSync(distPath) && fs.existsSync(path.join(distPath, 'index.html'));
 
-// Serve React build if available, otherwise serve vanilla
-if (reactBuildExists) {
-    console.log('📱 React build detected - serving React app');
+// Serve React static files with fallback to root assets
+app.use('/assets', express.static(path.join(distPath, 'assets')));
+app.use('/assets', express.static(path.join(__dirname, '..', 'assets')));
+
+// React app with Stripe key injection
+const serveReactApp = (req, res) => {
+    const reactHtmlPath = path.join(distPath, 'index.html');
     
-    // Serve React static files with fallback to root assets
-    app.use('/assets', express.static(path.join(distPath, 'assets')));
-    app.use('/assets', express.static(path.join(__dirname, '..', 'assets')));
+    if (!fs.existsSync(reactHtmlPath)) {
+        console.error('💥 React build not found! Run: npm run build:ui');
+        return res.status(500).send(
+            '<h1>React Build Missing</h1><p>Run <code>npm run build:ui</code> to build the React app.</p>'
+        );
+    }
     
-    // Serve React app with Stripe key injection
-    const serveReactApp = (req, res) => {
-        const reactHtmlPath = path.join(distPath, 'index.html');
+    fs.readFile(reactHtmlPath, 'utf8', (err, html) => {
+        if (err) {
+            console.error('Error reading React HTML file:', err);
+            return res.status(500).send('Error loading page');
+        }
         
-        fs.readFile(reactHtmlPath, 'utf8', (err, html) => {
-            if (err) {
-                console.error('Error reading React HTML file:', err);
-                return res.status(500).send('Error loading page');
-            }
-            
-            // Inject Stripe key for React app
-            const stripeKey = process.env.STRIPE_PUBLISHABLE_KEY || 'pk_test_dummy_key_replace_with_real_key';
-            const enablePreview = process.argv.includes('--preview');
-            
-            const isLocalDev = host === 'localhost' && !process.env.RAILWAY_ENVIRONMENT;
-            const isRailwayDev = process.env.RAILWAY_ENVIRONMENT && process.env.NODE_ENV !== 'production';
-            const isProduction = process.env.NODE_ENV === 'production' || (process.env.RAILWAY_ENVIRONMENT && process.env.NODE_ENV === 'production');
-            const environmentType = isProduction ? 'production' : (isRailwayDev ? 'railway-dev' : 'local-dev');
-            const isTestMode = stripeKey.startsWith('pk_test_');
-            
-            const scriptInjection = `    <script>
-        // Stripe publishable key injected by server (React mode)
+        // Inject Stripe key for React app
+        const stripeKey = process.env.STRIPE_PUBLISHABLE_KEY || 'pk_test_dummy_key_replace_with_real_key';
+        
+        const isLocalDev = host === 'localhost' && !process.env.RAILWAY_ENVIRONMENT;
+        const isRailwayDev = process.env.RAILWAY_ENVIRONMENT && process.env.NODE_ENV !== 'production';
+        const isProduction = process.env.NODE_ENV === 'production' || (process.env.RAILWAY_ENVIRONMENT && process.env.NODE_ENV === 'production');
+        const environmentType = isProduction ? 'production' : (isRailwayDev ? 'railway-dev' : 'local-dev');
+        const isTestMode = stripeKey.startsWith('pk_test_');
+        
+        const scriptInjection = `    <script>
+        // Stripe publishable key injected by server (React-only mode)
         window.STRIPE_PUBLISHABLE_KEY = '${stripeKey}';
         console.log('🔑 Stripe key configured:', '${stripeKey.substring(0, 12)}...');
-        console.log('⚛️ React app loaded via Express server');
+        console.log('⚛️ React donation widget loaded');
         // Environment information
         window.ENVIRONMENT_INFO = {
             type: '${environmentType}',
@@ -66,126 +67,28 @@ if (reactBuildExists) {
             isTestMode: ${isTestMode},
             host: '${host}',
             port: ${port},
-            mode: 'react-build'
+            mode: 'react-only'
         };
     </script>`;
-            
-            // Insert script before closing head tag
-            const modifiedHtml = html.replace(
-                '</head>',
-                `${scriptInjection}\n  </head>`
-            );
-            
-            res.send(modifiedHtml);
-        });
-    };
-    
-    // React app routes
-    app.get('/', serveReactApp);
-    app.get('/donate', serveReactApp);
-    app.get('/privacy', serveReactApp);
-    app.get('/terms', serveReactApp);
-    
-} else {
-    console.log('🗂️ No React build found - serving vanilla HTML');
-    
-    // Serve the homepage with redirect to /donate (vanilla mode)
-    app.get('/', (req, res) => {
-        const htmlPath = path.join(__dirname, '..', 'home.html');
         
-        fs.readFile(htmlPath, 'utf8', (err, html) => {
-            if (err) {
-                console.error('Error reading home HTML file:', err);
-                return res.status(500).send('Error loading page');
-            }
-            
-            res.send(html);
-        });
+        // Insert script before closing head tag
+        const modifiedHtml = html.replace(
+            '</head>',
+            `${scriptInjection}\n  </head>`
+        );
+        
+        res.send(modifiedHtml);
     });
-}
+};
 
-    // Vanilla donation widget (only if no React build)
-    if (!reactBuildExists) {
-        app.get('/donate', (req, res) => {
-            const htmlPath = path.join(__dirname, '..', 'index.html');
-            
-            fs.readFile(htmlPath, 'utf8', (err, html) => {
-                if (err) {
-                    console.error('Error reading HTML file:', err);
-                    return res.status(500).send('Error loading page');
-                }
-                
-                // Inject the Stripe publishable key from environment
-                const stripeKey = process.env.STRIPE_PUBLISHABLE_KEY || 'pk_test_dummy_key_replace_with_real_key';
-                
-                // Check for --preview parameter to enable preview mode (localhost only)
-                const enablePreview = process.argv.includes('--preview');
-                
-                // Detect environment type
-                const isLocalDev = host === 'localhost' && !process.env.RAILWAY_ENVIRONMENT;
-                const isRailwayDev = process.env.RAILWAY_ENVIRONMENT && process.env.NODE_ENV !== 'production';
-                const isProduction = process.env.NODE_ENV === 'production' || (process.env.RAILWAY_ENVIRONMENT && process.env.NODE_ENV === 'production');
-                const environmentType = isProduction ? 'production' : (isRailwayDev ? 'railway-dev' : 'local-dev');
-                const isTestMode = stripeKey.startsWith('pk_test_');
-                
-                // Create the script injection
-                const scriptInjection = `    <script>
-        // Stripe publishable key injected by server (vanilla mode)
-        window.STRIPE_PUBLISHABLE_KEY = '${stripeKey}';
-        console.log('Stripe key configured:', '${stripeKey.substring(0, 12)}...');
-        // Preview mode control (injected by server)
-        window.ENABLE_PREVIEW_MODE = ${enablePreview};
-        // Environment information (injected by server)
-        window.ENVIRONMENT_INFO = {
-            type: '${environmentType}',
-            isProduction: ${isProduction},
-            isTestMode: ${isTestMode},
-            host: '${host}',
-            port: ${port},
-            mode: 'vanilla'
-        };
-    </script>`;
-                
-                // Insert the script before the widget.js script
-                const modifiedHtml = html.replace(
-                    '<script src="js/widget.js"></script>',
-                    `${scriptInjection}\n    <script src="js/widget.js"></script>`
-                );
-                
-                res.send(modifiedHtml);
-            });
-        });
-    }
+// React app routes (SPA)
+app.get('/', serveReactApp);
+app.get('/donate', serveReactApp);
+app.get('/privacy', serveReactApp);
+app.get('/terms', serveReactApp);
 
-// Serve Privacy Policy page
-app.get('/privacy.html', (req, res) => {
-    const htmlPath = path.join(__dirname, '..', 'privacy.html');
-    res.sendFile(htmlPath, (err) => {
-        if (err) {
-            console.error('Error serving privacy.html:', err);
-            res.status(404).send('Privacy Policy page not found');
-        }
-    });
-});
 
-// Serve Terms of Service page
-app.get('/terms.html', (req, res) => {
-    const htmlPath = path.join(__dirname, '..', 'terms.html');
-    res.sendFile(htmlPath, (err) => {
-        if (err) {
-            console.error('Error serving terms.html:', err);
-            res.status(404).send('Terms of Service page not found');
-        }
-    });
-});
 
-// Serve static assets (CSS, JS, images) - only for vanilla mode
-if (!reactBuildExists) {
-    app.use('/css', express.static(path.join(__dirname, '..', 'css')));
-    app.use('/js', express.static(path.join(__dirname, '..', 'js')));
-    app.use('/embed', express.static(path.join(__dirname, '..', 'embed')));
-    app.use('/assets', express.static(path.join(__dirname, '..', 'assets')));
-}
 
 // API endpoint to create payment intent
 app.post('/api/create-payment-intent', async (req, res) => {
@@ -520,54 +423,8 @@ async function handleInvoiceFinalized(invoice) {
     }
 }
 
-// SPA fallback for React Router (only if React build exists)
-if (reactBuildExists) {
-    app.get('*', (req, res) => {
-        // Serve React app for any unmatched routes
-        const reactHtmlPath = path.join(distPath, 'index.html');
-        
-        fs.readFile(reactHtmlPath, 'utf8', (err, html) => {
-            if (err) {
-                console.error('Error reading React HTML file for SPA fallback:', err);
-                return res.status(500).send('Error loading page');
-            }
-            
-            // Inject Stripe key for React app
-            const stripeKey = process.env.STRIPE_PUBLISHABLE_KEY || 'pk_test_dummy_key_replace_with_real_key';
-            const enablePreview = process.argv.includes('--preview');
-            
-            const isLocalDev = host === 'localhost' && !process.env.RAILWAY_ENVIRONMENT;
-            const isRailwayDev = process.env.RAILWAY_ENVIRONMENT && process.env.NODE_ENV !== 'production';
-            const isProduction = process.env.NODE_ENV === 'production' || (process.env.RAILWAY_ENVIRONMENT && process.env.NODE_ENV === 'production');
-            const environmentType = isProduction ? 'production' : (isRailwayDev ? 'railway-dev' : 'local-dev');
-            const isTestMode = stripeKey.startsWith('pk_test_');
-            
-            const scriptInjection = `    <script>
-        // Stripe publishable key injected by server (React SPA fallback)
-        window.STRIPE_PUBLISHABLE_KEY = '${stripeKey}';
-        console.log('🔑 Stripe key configured:', '${stripeKey.substring(0, 12)}...');
-        console.log('⚛️ React app loaded via SPA fallback');
-        // Environment information
-        window.ENVIRONMENT_INFO = {
-            type: '${environmentType}',
-            isProduction: ${isProduction},
-            isTestMode: ${isTestMode},
-            host: '${host}',
-            port: ${port},
-            mode: 'react-spa-fallback'
-        };
-    </script>`;
-            
-            // Insert script before closing head tag
-            const modifiedHtml = html.replace(
-                '</head>',
-                `${scriptInjection}\n  </head>`
-            );
-            
-            res.send(modifiedHtml);
-        });
-    });
-}
+// SPA fallback for React Router - catch all unmatched routes
+app.get('*', serveReactApp);
 
 // Check for --host parameter to enable network access
 // In production environments, always bind to 0.0.0.0 for external access
