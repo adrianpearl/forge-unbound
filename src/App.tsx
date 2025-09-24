@@ -69,7 +69,7 @@ function App() {
                         <Toaster 
                             position="top-right"
                             toastOptions={{
-                                duration: 6000,
+                                duration: 5000,
                                 style: {
                                     background: 'white',
                                     color: '#1f2937',

@@ -107,8 +107,7 @@ export async function saveCampaignConfig(campaignId: string, config: CampaignCon
       action: {
         label: 'Sign Up',
         onClick: () => window.open('/signup', '_blank')
-      },
-      duration: 60000,
+      }
     });
     
     // Simulate a successful save for the UI (but don't actually persist)
