@@ -106,7 +106,7 @@ export async function saveCampaignConfig(campaignId: string, config: CampaignCon
       description: 'Create an account to save settings and deploy your own donation portal.',
       action: {
         label: 'Sign Up',
-        onClick: () => window.open('/signup', '_blank')
+        onClick: () => {} //window.open('/signup', '_blank')
       }
     });
     
