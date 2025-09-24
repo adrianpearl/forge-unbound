@@ -95,7 +95,7 @@ export function CampaignConfigForm({ initialConfig, onConfigChange, className = 
   return (
     <div className={`space-y-6 ${className}`}>
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">Campaign Configuration</h3>
+        <h3 className="text-lg font-semibold">Donation Portal Configuration</h3>
         <div className="flex gap-2">
           <input
             type="file"
@@ -127,245 +127,16 @@ export function CampaignConfigForm({ initialConfig, onConfigChange, className = 
         </div>
       </div>
 
-      <Accordion type="multiple" defaultValue={["basic"]} className="w-full">
-        {/* Basic Information */}
-        <AccordionItem value="basic">
-          <AccordionTrigger className="text-base font-semibold">
-            Basic Information
-          </AccordionTrigger>
-          <AccordionContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 px-1">
-              <div className="space-y-2">
-                <Label htmlFor="name">Campaign Name</Label>
-                <Input
-                  id="name"
-                  value={config.name}
-                  onChange={(e) => updateConfig({ name: e.target.value })}
-                  placeholder="Sarah Johnson"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="fullName">Full Campaign Name</Label>
-                <Input
-                  id="fullName"
-                  value={config.fullName}
-                  onChange={(e) => updateConfig({ fullName: e.target.value })}
-                  placeholder="Sarah Johnson for Senate"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="tagline">Tagline</Label>
-                <Input
-                  id="tagline"
-                  value={config.tagline}
-                  onChange={(e) => updateConfig({ tagline: e.target.value })}
-                  placeholder="Fighting for working families"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="website">Website URL</Label>
-                <Input
-                  id="website"
-                  type="url"
-                  value={config.website}
-                  onChange={(e) => updateConfig({ website: e.target.value })}
-                  placeholder="https://example.com"
-                />
-              </div>
-
-              <div className="space-y-2 md:col-span-2">
-                <Label htmlFor="contactEmail">Contact Email</Label>
-                <Input
-                  id="contactEmail"
-                  type="email"
-                  value={config.contactEmail}
-                  onChange={(e) => updateConfig({ contactEmail: e.target.value })}
-                  placeholder="hello@example.com"
-                />
-              </div>
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-
-        {/* Address Information */}
-        <AccordionItem value="address">
-          <AccordionTrigger className="text-base font-semibold">
-            Address Information
-          </AccordionTrigger>
-          <AccordionContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 px-1">
-              <div className="space-y-2 md:col-span-2">
-                <Label htmlFor="address">Street Address</Label>
-                <Input
-                  id="address"
-                  value={config.address}
-                  onChange={(e) => updateConfig({ address: e.target.value })}
-                  placeholder="123 Main Street"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="city">City</Label>
-                <Input
-                  id="city"
-                  value={config.city}
-                  onChange={(e) => updateConfig({ city: e.target.value })}
-                  placeholder="Anytown"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="state">State</Label>
-                <Input
-                  id="state"
-                  value={config.state}
-                  onChange={(e) => updateConfig({ state: e.target.value })}
-                  placeholder="NY"
-                  maxLength={2}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="zipCode">ZIP Code</Label>
-                <Input
-                  id="zipCode"
-                  value={config.zipCode}
-                  onChange={(e) => updateConfig({ zipCode: e.target.value })}
-                  placeholder="12345"
-                />
-              </div>
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-
-        {/* Branding */}
-        <AccordionItem value="branding">
-          <AccordionTrigger className="text-base font-semibold">
-            Branding & Visual Identity
-          </AccordionTrigger>
-          <AccordionContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 px-1">
-              <div className="space-y-2">
-                <Label htmlFor="logoUrl">Logo URL</Label>
-                <Input
-                  id="logoUrl"
-                  type="url"
-                  value={config.logoUrl}
-                  onChange={(e) => updateConfig({ logoUrl: e.target.value })}
-                  placeholder="https://example.com/logo.png"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="logoAlt">Logo Alt Text</Label>
-                <Input
-                  id="logoAlt"
-                  value={config.logoAlt}
-                  onChange={(e) => updateConfig({ logoAlt: e.target.value })}
-                  placeholder="Campaign Logo"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="faviconUrl">Favicon URL</Label>
-                <Input
-                  id="faviconUrl"
-                  type="url"
-                  value={config.faviconUrl || ''}
-                  onChange={(e) => updateConfig({ faviconUrl: e.target.value })}
-                  placeholder="https://example.com/favicon.ico"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="primaryColor">Primary Color</Label>
-                <ColorPicker
-                  value={config.primaryColor || '#1e40af'}
-                  onChange={(color) => updateConfig({ primaryColor: color })}
-                />
-              </div>
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-
-        {/* Page Content */}
-        <AccordionItem value="content">
-          <AccordionTrigger className="text-base font-semibold">
-            Page Content & Messaging
-          </AccordionTrigger>
-          <AccordionContent>
-            <div className="space-y-4 pt-2 px-1">
-              <div className="space-y-2">
-                <Label htmlFor="headerContent">Header Content (Markdown)</Label>
-                <Textarea
-                  id="headerContent"
-                  value={config.headerContent}
-                  onChange={(e) => updateConfig({ headerContent: e.target.value })}
-                  placeholder="# Campaign Message&#10;&#10;Your campaign's message here..."
-                  rows={8}
-                  className="font-mono text-sm"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="pageTitle">Page Title</Label>
-                  <Input
-                    id="pageTitle"
-                    value={config.pageTitle || ''}
-                    onChange={(e) => updateConfig({ pageTitle: e.target.value })}
-                    placeholder="Donate | Campaign Name"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="metaDescription">Meta Description</Label>
-                  <Input
-                    id="metaDescription"
-                    value={config.metaDescription || ''}
-                    onChange={(e) => updateConfig({ metaDescription: e.target.value })}
-                    placeholder="Support our campaign"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="customFooterText">Footer Text</Label>
-                <Textarea
-                  id="customFooterText"
-                  value={config.customFooterText || ''}
-                  onChange={(e) => updateConfig({ customFooterText: e.target.value })}
-                  placeholder="Help support our campaign..."
-                  rows={3}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="donationSuccessMessage">Success Message</Label>
-                <Textarea
-                  id="donationSuccessMessage"
-                  value={config.donationSuccessMessage || ''}
-                  onChange={(e) => updateConfig({ donationSuccessMessage: e.target.value })}
-                  placeholder="Thank you for your support!"
-                  rows={2}
-                />
-              </div>
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-
+      <Accordion type="multiple" defaultValue={["donations", "content"]} className="w-full">
         {/* Donation Settings */}
         <AccordionItem value="donations">
           <AccordionTrigger className="text-base font-semibold">
-            Donation Settings
+            Donation Amounts & Limits
           </AccordionTrigger>
           <AccordionContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 px-1">
               <div className="space-y-2 md:col-span-2">
-                <Label htmlFor="defaultAmounts">Default Amounts (comma-separated)</Label>
+                <Label htmlFor="defaultAmounts">Preset Amounts (comma-separated, in dollars)</Label>
                 <Input
                   id="defaultAmounts"
                   value={config.defaultAmounts.join(', ')}
@@ -375,7 +146,7 @@ export function CampaignConfigForm({ initialConfig, onConfigChange, className = 
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="maxContribution">Maximum Contribution</Label>
+                <Label htmlFor="maxContribution">Maximum Contribution ($)</Label>
                 <Input
                   id="maxContribution"
                   type="number"
@@ -388,30 +159,73 @@ export function CampaignConfigForm({ initialConfig, onConfigChange, className = 
           </AccordionContent>
         </AccordionItem>
 
-        {/* Legal Information */}
-        <AccordionItem value="legal">
+        {/* Page Content & Messaging */}
+        <AccordionItem value="content">
           <AccordionTrigger className="text-base font-semibold">
-            Legal & Compliance
+            Page Content & Messaging
+          </AccordionTrigger>
+          <AccordionContent>
+            <div className="space-y-4 pt-2 px-1">
+              <div className="space-y-2">
+                <Label htmlFor="headerContent">Donation Page Message (Markdown supported)</Label>
+                <Textarea
+                  id="headerContent"
+                  value={config.headerContent}
+                  onChange={(e) => updateConfig({ headerContent: e.target.value })}
+                  placeholder="# Help Us Win\n\nYour support makes the difference in this critical race..."
+                  rows={6}
+                  className="font-mono text-sm"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="pageTitle">Browser Tab Title</Label>
+                  <Input
+                    id="pageTitle"
+                    value={config.pageTitle || ''}
+                    onChange={(e) => updateConfig({ pageTitle: e.target.value })}
+                    placeholder="Donate | Sarah Johnson for Senate"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="donationSuccessMessage">Thank You Message</Label>
+                  <Input
+                    id="donationSuccessMessage"
+                    value={config.donationSuccessMessage || ''}
+                    onChange={(e) => updateConfig({ donationSuccessMessage: e.target.value })}
+                    placeholder="Thank you for your support!"
+                  />
+                </div>
+              </div>
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+
+        {/* Visual Customization */}
+        <AccordionItem value="branding">
+          <AccordionTrigger className="text-base font-semibold">
+            Visual Customization
           </AccordionTrigger>
           <AccordionContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 px-1">
               <div className="space-y-2">
-                <Label htmlFor="legalName">Legal Name</Label>
-                <Input
-                  id="legalName"
-                  value={config.legalName}
-                  onChange={(e) => updateConfig({ legalName: e.target.value })}
-                  placeholder="Campaign Committee Inc"
+                <Label htmlFor="primaryColor">Primary Color</Label>
+                <ColorPicker
+                  value={config.primaryColor || '#1e40af'}
+                  onChange={(color) => updateConfig({ primaryColor: color })}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="fecId">FEC ID (optional)</Label>
+                <Label htmlFor="logoUrl">Campaign Logo URL (optional)</Label>
                 <Input
-                  id="fecId"
-                  value={config.fecId || ''}
-                  onChange={(e) => updateConfig({ fecId: e.target.value })}
-                  placeholder="C00123456"
+                  id="logoUrl"
+                  type="url"
+                  value={config.logoUrl}
+                  onChange={(e) => updateConfig({ logoUrl: e.target.value })}
+                  placeholder="https://example.com/logo.png"
                 />
               </div>
             </div>
