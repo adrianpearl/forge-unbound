@@ -479,9 +479,9 @@ function DonationWidget({ showFullPage = false }: DonationWidgetProps) {
   
   // Full page version with logo, header, footer, etc.
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-muted">
       <div className="donation-page max-w-xl mx-auto px-6">
-        <div className="logo max-w-64 my-4 mx-auto">
+        <div className="logo max-w-64 py-4 mx-auto">
           <a href={campaign.website}>
             <img 
               src={campaign.logoUrl} 

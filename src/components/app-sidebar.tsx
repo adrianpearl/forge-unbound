@@ -2,13 +2,9 @@
 
 import * as React from "react"
 import {
-  Eye,
-  Settings,
-  CreditCard,
-  Palette,
-  MessageSquare,
-  Zap,
-  DollarSign
+  Landmark,
+  DollarSign,
+  ChartBar
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -33,7 +29,7 @@ const data = {
   teams: [
     {
       name: "Campaign Admin",
-      logo: Zap,
+      logo: Landmark,
       plan: "Pro",
     },
   ],
@@ -42,6 +38,13 @@ const data = {
       title: "Donation Portal",
       url: "/",
       icon: DollarSign,
+      isActive: false,
+      items: [],
+    },
+    {
+      title: "Donor Analytics",
+      url: "/",
+      icon: ChartBar,
       isActive: false,
       items: [],
     },
