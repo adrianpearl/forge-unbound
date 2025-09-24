@@ -34,11 +34,8 @@ app.get('/api/stripe-key', (req, res) => {
     res.json({ publishableKey: stripeKey });
 });
 
-// Save config endpoint (development only)
+// Save config endpoint
 app.post('/api/save-config/:campaignId', (req, res) => {
-    if (!isDevelopment) {
-        return res.status(403).json({ error: 'Config saving only allowed in development' });
-    }
     
     try {
         const { campaignId } = req.params;
