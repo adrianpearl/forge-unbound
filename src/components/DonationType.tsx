@@ -28,8 +28,8 @@ export function DonationType({ onTypeChange, selectedType = 'monthly' }: Donatio
       >
         {/* Monthly Option */}
         <label
-          className={`donation-type-btn relative flex items-center justify-center p-4 border-2 rounded-lg cursor-pointer transition-all ${donationType === 'monthly'
-              ? 'border-primary bg-primary text-primary-foreground'
+          className={`donation-type-btn relative flex items-center justify-center px-4 py-2 border-2 rounded-lg cursor-pointer transition-all ${donationType === 'monthly'
+              ? 'border-campaign-primary bg-campaign-primary text-campaign-primary-foreground'
               : 'border-gray-200 hover:border-gray-300'
             }`}
         >
@@ -43,8 +43,8 @@ export function DonationType({ onTypeChange, selectedType = 'monthly' }: Donatio
 
         {/* One-time Option */}
         <label
-          className={`donation-type-btn relative flex items-center justify-center p-4 border-2 rounded-lg cursor-pointer transition-all ${donationType === 'one-time'
-              ? 'border-primary bg-primary text-primary-foreground'
+          className={`donation-type-btn relative flex items-center justify-center px-4 py-2 border-2 rounded-lg cursor-pointer transition-all ${donationType === 'one-time'
+              ? 'border-campaign-primary bg-campaign-primary text-campaign-primary-foreground'
               : 'border-gray-200 hover:border-gray-300'
             }`}
         >

@@ -94,6 +94,20 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+/* Platform colors (fixed, not configurable) */
+@theme {
+  --color-primary: oklch(0.21 0.006 285.885); /* Platform dark grey */
+  --color-primary-foreground: oklch(0.985 0 0);
+  --color-secondary: oklch(0.967 0.001 286.375);
+  --color-secondary-foreground: oklch(0.21 0.006 285.885);
+  
+  /* Campaign colors (dynamic, configurable, using hex) */
+  --color-campaign-primary: var(--campaign-primary-color, #1e40af);
+  --color-campaign-primary-foreground: var(--campaign-primary-foreground-color, #ffffff);
+  --color-campaign-secondary: var(--campaign-secondary-color, #1e3a8a);
+  --color-campaign-secondary-foreground: var(--campaign-secondary-foreground-color, #ffffff);
+}
+
 :root {
   --radius: 0.375rem;
   --background: oklch(1 0 0);
@@ -174,9 +188,9 @@
   [data-page="donation"] a,
   .donation-page a,
   .prose a {
-    color: var(--color-blue-600);
+    color: var(--color-blue-700);
     text-decoration: underline;
-    text-decoration-color: var(--color-blue-600);
+    text-decoration-color: var(--color-blue-700);
     font-weight: semibold;
   }
 }

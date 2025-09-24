@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { ColorPicker } from '@/components/ui/color-picker';
 import { Save, RotateCcw, Download, Upload } from 'lucide-react';
 
 interface CampaignConfigFormProps {
@@ -122,7 +123,7 @@ export function CampaignConfigForm({ initialConfig, onConfigChange, className = 
             Basic Information
           </AccordionTrigger>
           <AccordionContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 px-1">
               <div className="space-y-2">
                 <Label htmlFor="name">Campaign Name</Label>
                 <Input
@@ -184,7 +185,7 @@ export function CampaignConfigForm({ initialConfig, onConfigChange, className = 
             Address Information
           </AccordionTrigger>
           <AccordionContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 px-1">
               <div className="space-y-2 md:col-span-2">
                 <Label htmlFor="address">Street Address</Label>
                 <Input
@@ -235,7 +236,7 @@ export function CampaignConfigForm({ initialConfig, onConfigChange, className = 
             Branding & Visual Identity
           </AccordionTrigger>
           <AccordionContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 px-1">
               <div className="space-y-2">
                 <Label htmlFor="logoUrl">Logo URL</Label>
                 <Input
@@ -270,11 +271,9 @@ export function CampaignConfigForm({ initialConfig, onConfigChange, className = 
 
               <div className="space-y-2">
                 <Label htmlFor="primaryColor">Primary Color</Label>
-                <Input
-                  id="primaryColor"
-                  value={config.primaryColor || ''}
-                  onChange={(e) => updateConfig({ primaryColor: e.target.value })}
-                  placeholder="#1e40af"
+                <ColorPicker
+                  value={config.primaryColor || '#1e40af'}
+                  onChange={(color) => updateConfig({ primaryColor: color })}
                 />
               </div>
             </div>
@@ -287,7 +286,7 @@ export function CampaignConfigForm({ initialConfig, onConfigChange, className = 
             Page Content & Messaging
           </AccordionTrigger>
           <AccordionContent>
-            <div className="space-y-4 pt-2">
+            <div className="space-y-4 pt-2 px-1">
               <div className="space-y-2">
                 <Label htmlFor="headerContent">Header Content (Markdown)</Label>
                 <Textarea
@@ -353,7 +352,7 @@ export function CampaignConfigForm({ initialConfig, onConfigChange, className = 
             Donation Settings
           </AccordionTrigger>
           <AccordionContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 px-1">
               <div className="space-y-2 md:col-span-2">
                 <Label htmlFor="defaultAmounts">Default Amounts (comma-separated)</Label>
                 <Input
@@ -384,7 +383,7 @@ export function CampaignConfigForm({ initialConfig, onConfigChange, className = 
             Legal & Compliance
           </AccordionTrigger>
           <AccordionContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 px-1">
               <div className="space-y-2">
                 <Label htmlFor="legalName">Legal Name</Label>
                 <Input

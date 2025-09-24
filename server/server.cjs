@@ -18,77 +18,82 @@ const port = process.env.PORT || 3000;
 // Initialize Stripe with your restricted key
 const stripe = require('stripe')(process.env.STRIPE_RESTRICTED_KEY);
 
+// Determine if we're in development mode
+const isDevelopment = process.env.NODE_ENV !== 'production';
+
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// React-only server - no more vanilla fallbacks!
-const distPath = path.join(__dirname, '..', 'dist');
-
-// Serve React static files with fallback to root assets
-app.use('/assets', express.static(path.join(distPath, 'assets')));
-app.use('/assets', express.static(path.join(__dirname, '..', 'assets')));
-
-// Serve public directory for JSON config files
+// Always serve public directory for JSON config files
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
-// React app with Stripe key injection
-const serveReactApp = (req, res) => {
-    const reactHtmlPath = path.join(distPath, 'index.html');
+// Stripe key endpoint for development (Vite dev server needs this)
+app.get('/api/stripe-key', (req, res) => {
+    const stripeKey = process.env.STRIPE_PUBLISHABLE_KEY || 'pk_test_dummy_key_replace_with_real_key';
+    res.json({ publishableKey: stripeKey });
+});
+
+// Production: Serve built React app
+if (!isDevelopment) {
+    const distPath = path.join(__dirname, '..', 'dist');
     
-    if (!fs.existsSync(reactHtmlPath)) {
-        console.error('💥 React build not found! Run: npm run build:ui');
-        return res.status(500).send(
-            '<h1>React Build Missing</h1><p>Run <code>npm run build:ui</code> to build the React app.</p>'
-        );
-    }
+    // Serve static assets
+    app.use('/assets', express.static(path.join(distPath, 'assets')));
     
-    fs.readFile(reactHtmlPath, 'utf8', (err, html) => {
-        if (err) {
-            console.error('Error reading React HTML file:', err);
-            return res.status(500).send('Error loading page');
+    // React app with Stripe key injection for production
+    const serveReactApp = (req, res) => {
+        const reactHtmlPath = path.join(distPath, 'index.html');
+        
+        if (!fs.existsSync(reactHtmlPath)) {
+            console.error('💥 React build not found! Run: bun run build');
+            return res.status(500).send(
+                '<h1>React Build Missing</h1><p>Run <code>bun run build</code> to build the React app.</p>'
+            );
         }
         
-        // Inject Stripe key for React app
-        const stripeKey = process.env.STRIPE_PUBLISHABLE_KEY || 'pk_test_dummy_key_replace_with_real_key';
-        
-        const isLocalDev = host === 'localhost' && !process.env.RAILWAY_ENVIRONMENT;
-        const isRailwayDev = process.env.RAILWAY_ENVIRONMENT && process.env.NODE_ENV !== 'production';
-        const isProduction = process.env.NODE_ENV === 'production' || (process.env.RAILWAY_ENVIRONMENT && process.env.NODE_ENV === 'production');
-        const environmentType = isProduction ? 'production' : (isRailwayDev ? 'railway-dev' : 'local-dev');
-        const isTestMode = stripeKey.startsWith('pk_test_');
-        
-        const scriptInjection = `    <script>
-        // Stripe publishable key injected by server (React-only mode)
+        fs.readFile(reactHtmlPath, 'utf8', (err, html) => {
+            if (err) {
+                console.error('Error reading React HTML file:', err);
+                return res.status(500).send('Error loading page');
+            }
+            
+            // Inject Stripe key for React app
+            const stripeKey = process.env.STRIPE_PUBLISHABLE_KEY || 'pk_test_dummy_key_replace_with_real_key';
+            const isTestMode = stripeKey.startsWith('pk_test_');
+            
+            const scriptInjection = `    <script>
+        // Stripe publishable key injected by server
         window.STRIPE_PUBLISHABLE_KEY = '${stripeKey}';
         console.log('🔑 Stripe key configured:', '${stripeKey.substring(0, 12)}...');
-        console.log('⚛️ React donation widget loaded');
-        // Environment information
         window.ENVIRONMENT_INFO = {
-            type: '${environmentType}',
-            isProduction: ${isProduction},
+            type: 'production',
+            isProduction: true,
             isTestMode: ${isTestMode},
-            host: '${host}',
-            port: ${port},
-            mode: 'react-only'
+            mode: 'built'
         };
     </script>`;
-        
-        // Insert script before closing head tag
-        const modifiedHtml = html.replace(
-            '</head>',
-            `${scriptInjection}\n  </head>`
-        );
-        
-        res.send(modifiedHtml);
-    });
-};
-
-// React app routes (SPA)
-app.get('/', serveReactApp);
-app.get('/donate', serveReactApp);
-app.get('/privacy', serveReactApp);
-app.get('/terms', serveReactApp);
+            
+            // Insert script before closing head tag
+            const modifiedHtml = html.replace(
+                '</head>',
+                `${scriptInjection}\n  </head>`
+            );
+            
+            res.send(modifiedHtml);
+        });
+    };
+    
+    // React app routes (SPA) - only in production
+    app.get('/', serveReactApp);
+    app.get('/donate', serveReactApp);
+    app.get('/privacy', serveReactApp);
+    app.get('/terms', serveReactApp);
+    app.get('/admin/*', serveReactApp);
+    
+    // SPA fallback for React Router - catch all unmatched routes (production only)
+    app.get('*', serveReactApp);
+}
 
 
 
@@ -426,8 +431,6 @@ async function handleInvoiceFinalized(invoice) {
     }
 }
 
-// SPA fallback for React Router - catch all unmatched routes
-app.get('*', serveReactApp);
 
 // Check for --host parameter to enable network access
 // In production environments, always bind to 0.0.0.0 for external access
@@ -441,15 +444,25 @@ app.listen(port, host, () => {
     const isTestMode = (process.env.STRIPE_PUBLISHABLE_KEY || '').startsWith('pk_test_');
     
     console.log('='.repeat(60));
-    console.log(`🚀 DONATION WIDGET SERVER STARTED`);
-    console.log('='.repeat(60));
-    console.log(`🎯 Environment: ${environmentType.toUpperCase()}`);
-    console.log(`🔑 Stripe Mode: ${isTestMode ? 'TEST' : 'LIVE'}`);
-    console.log(`🌍 Server: http://${host}:${port}`);
-    console.log(`📝 Widget: http://localhost:${port}`);
+    if (isDevelopment) {
+        console.log(`⚡ EXPRESS API SERVER STARTED`);
+        console.log('='.repeat(60));
+        console.log(`🎯 Environment: ${environmentType.toUpperCase()}`);
+        console.log(`🔑 Stripe Mode: ${isTestMode ? 'TEST' : 'LIVE'}`);
+        console.log(`🌐 API Server: http://${host}:${port}`);
+        console.log(`📝 Frontend (Vite): http://localhost:5173`);
+        console.log(`🔄 Hot reload enabled for React development`);
+    } else {
+        console.log(`🚀 DONATION WIDGET SERVER STARTED`);
+        console.log('='.repeat(60));
+        console.log(`🎯 Environment: ${environmentType.toUpperCase()}`);
+        console.log(`🔑 Stripe Mode: ${isTestMode ? 'TEST' : 'LIVE'}`);
+        console.log(`🌍 Server: http://${host}:${port}`);
+        console.log(`📝 Widget: http://localhost:${port}`);
+    }
     
     if (!isProduction) {
-        console.log(`🚨 WARNING: This is a ${environmentType.replace('-', ' ').toUpperCase()} environment!`);
+        console.log(`🚨 Note: This is a ${environmentType.replace('-', ' ').toUpperCase()} environment!`);
     }
     
     if (isProduction) {

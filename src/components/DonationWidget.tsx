@@ -38,60 +38,87 @@ function DonationWidget({ initialAmount = 0 }: DonationWidgetProps) {
   const isFormValid = donationAmount > 0 && donorInfoValid && paymentInfoValid;
 
   useEffect(() => {
-    if (!window.Stripe) {
-      console.error('Stripe.js not loaded');
-      return;
-    }
-    
-    const publishableKey = window.STRIPE_PUBLISHABLE_KEY || 'pk_test_dummy_key_replace_with_real_key';
-    const stripeInstance = window.Stripe(publishableKey);
-    if (!stripeInstance) {
-      console.error('Failed to initialize Stripe');
-      return;
-    }
-    
-    const elementsInstance = stripeInstance.elements();
-    setStripe(stripeInstance);
-    setElements(elementsInstance);
-
-    const card = elementsInstance.create('card', {
-      style: {
-        base: {
-          fontSize: '16px',
-          color: '#0f172a', // matches shadcn foreground
-          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-          '::placeholder': { color: '#64748b' }, // matches shadcn muted-foreground
-          iconColor: '#64748b',
-        },
-        invalid: { 
-          color: '#dc2626', // matches shadcn destructive
-          iconColor: '#dc2626',
-        },
-        complete: {
-          iconColor: '#0f172a', // matches shadcn primary
-        },
-      },
-      hidePostalCode: true,
-    });
-    card.mount(cardElementRef.current);
-    cardRef.current = card;
-
-    // Listen for card validation changes
-    card.on('change', (event) => {
-      // Card is valid when complete and no errors
-      const isValid = event.complete === true && !event.error;
-      setPaymentInfoValid(isValid);
-      
-      // Update card errors in React state
-      if (event.error) {
-        setCardErrors(event.error.message);
-      } else {
-        setCardErrors('');
+    const initializeStripe = async () => {
+      if (!window.Stripe) {
+        console.error('Stripe.js not loaded');
+        return;
       }
-    });
+      
+      let publishableKey = window.STRIPE_PUBLISHABLE_KEY;
+      
+      // In development, fetch the key from API if not available in window
+      if (!publishableKey && import.meta.env.DEV) {
+        try {
+          const response = await fetch('/api/stripe-key');
+          const data = await response.json();
+          publishableKey = data.publishableKey;
+          console.log('🔑 Fetched Stripe key from API:', publishableKey.substring(0, 12) + '...');
+        } catch (error) {
+          console.error('Failed to fetch Stripe key:', error);
+          publishableKey = 'pk_test_dummy_key_replace_with_real_key';
+        }
+      }
+      
+      if (!publishableKey) {
+        publishableKey = 'pk_test_dummy_key_replace_with_real_key';
+      }
+      
+      const stripeInstance = window.Stripe(publishableKey);
+      if (!stripeInstance) {
+        console.error('Failed to initialize Stripe');
+        return;
+      }
+      
+      const elementsInstance = stripeInstance.elements();
+      setStripe(stripeInstance);
+      setElements(elementsInstance);
 
+      const card = elementsInstance.create('card', {
+        style: {
+          base: {
+            fontSize: '16px',
+            color: '#0f172a', // matches shadcn foreground
+            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+            '::placeholder': { color: '#64748b' }, // matches shadcn muted-foreground
+            iconColor: '#64748b',
+          },
+          invalid: { 
+            color: '#dc2626', // matches shadcn destructive
+            iconColor: '#dc2626',
+          },
+          complete: {
+            iconColor: '#0f172a', // matches shadcn primary
+          },
+        },
+        hidePostalCode: true,
+      });
+      
+      if (cardElementRef.current) {
+        card.mount(cardElementRef.current);
+        cardRef.current = card;
+
+        // Listen for card validation changes
+        card.on('change', (event) => {
+          // Card is valid when complete and no errors
+          const isValid = event.complete === true && !event.error;
+          setPaymentInfoValid(isValid);
+          
+          // Update card errors in React state
+          if (event.error) {
+            setCardErrors(event.error.message);
+          } else {
+            setCardErrors('');
+          }
+        });
+      }
+    };
+    
+    initializeStripe();
+    
     return () => {
-      try { card.unmount(); } catch {}
+      if (cardRef.current) {
+        try { cardRef.current.unmount(); } catch {}
+      }
     };
   }, []);
 

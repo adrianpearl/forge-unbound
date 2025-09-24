@@ -1,6 +1,22 @@
 import React, { createContext, useContext, ReactNode, useEffect, useState } from 'react';
 import { CampaignConfig, parseCampaignConfig, loadCampaignConfig } from '../types/campaign';
 
+// Utility function to determine if a color is light or dark (for contrast)
+function isLightColor(hex: string): boolean {
+  // Remove hash if present
+  hex = hex.replace('#', '');
+  
+  // Parse RGB values
+  const r = parseInt(hex.substr(0, 2), 16);
+  const g = parseInt(hex.substr(2, 2), 16);
+  const b = parseInt(hex.substr(4, 2), 16);
+  
+  // Calculate relative luminance
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  
+  return luminance > 0.5;
+}
+
 interface CampaignContextType {
   config: CampaignConfig;
   updateConfig: (newConfig: CampaignConfig) => void;
@@ -47,6 +63,29 @@ export function CampaignProvider({ children, config, campaignId }: CampaignProvi
         document.head.appendChild(metaDesc);
       }
       metaDesc.content = newConfig.metaDescription;
+    }
+    
+    // Update CSS variables for campaign theme colors
+    if (newConfig.primaryColor) {
+      // Set the campaign primary color directly as hex
+      document.documentElement.style.setProperty('--campaign-primary-color', newConfig.primaryColor);
+      
+      // Calculate appropriate foreground color based on lightness
+      const foregroundColor = isLightColor(newConfig.primaryColor) ? '#000000' : '#ffffff';
+      document.documentElement.style.setProperty('--campaign-primary-foreground-color', foregroundColor);
+      
+      console.log('🎨 Updated campaign primary color:', newConfig.primaryColor, 'with foreground:', foregroundColor);
+    }
+    
+    if (newConfig.secondaryColor) {
+      // Set the campaign secondary color directly as hex
+      document.documentElement.style.setProperty('--campaign-secondary-color', newConfig.secondaryColor);
+      
+      // Calculate appropriate foreground color
+      const foregroundColor = isLightColor(newConfig.secondaryColor) ? '#000000' : '#ffffff';
+      document.documentElement.style.setProperty('--campaign-secondary-foreground-color', foregroundColor);
+      
+      console.log('🎨 Updated campaign secondary color:', newConfig.secondaryColor, 'with foreground:', foregroundColor);
     }
   };
 

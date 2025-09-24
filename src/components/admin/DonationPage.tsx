@@ -38,7 +38,7 @@ export function DonationPage() {
       breadcrumbs={[{ label: 'Donation Widget' }]}
     >
       <div className="donation-page max-w-xl mx-auto px-6">
-        <div className="logo max-w-56 my-4 mx-auto">
+        <div className="logo max-w-64 my-4 mx-auto">
           <a href={campaign.website}>
             <img 
               src={campaign.logoUrl} 
@@ -50,6 +50,7 @@ export function DonationPage() {
               }}
             />
           </a>
+          <div className="w-full text-center text-xs">{campaign.tagline}</div>
         </div>
         <div className="page-header py-4">
           <div className="prose prose-gray max-w-2xl">

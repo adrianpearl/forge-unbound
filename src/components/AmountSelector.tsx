@@ -69,7 +69,7 @@ export function AmountSelector({ onAmountChange, selectedAmount, customAmount, i
           <Button
             key={amount}
             type="button"
-            variant={activeAmount === amount ? "default" : "outline"}
+            variant={activeAmount === amount ? "campaign-selected" : "outline"}
             className="h-12 text-sm font-medium"
             onClick={() => handlePresetClick(amount)}
           >

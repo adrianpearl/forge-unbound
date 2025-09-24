@@ -1,9 +1,9 @@
 {
   "name": "Sarah Johnson",
   "fullName": "Sarah Johnson for Senate",
-  "tagline": "Fight, Fight, Fight",
+  "tagline": "DevinCook at en.wikipedia, Public domain, via Wikimedia Commons",
   "headerContent": "# This is your future campaign donation portal.\n\nConfigure your donation page below.\n\nContinue to production to deploy your page.\n\nReturn to this preview page at any time.",
-  "website": "https://sarahjohnsonforsenate.com/",
+  "website": "https://commons.wikimedia.org/wiki/File:John_Shaw_Flag_(Red_First).svg",
   "contactEmail": "hello@sarahjohnsonforsenate.com",
   
   "address": "4500 Democracy Boulevard",
@@ -11,7 +11,7 @@
   "state": "IL",
   "zipCode": "62701",
   
-  "logoUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a1/Campaign_%28magazine%29_logo.svg",
+  "logoUrl": "https://upload.wikimedia.org/wikipedia/commons/6/67/John_Shaw_Flag_%28Red_First%29.svg",
   "logoAlt": "Sarah Johnson for Senate",
   "faviconUrl": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗳️</text></svg>",
   "primaryColor": "#1e40af",
