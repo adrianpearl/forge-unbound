@@ -92,9 +92,30 @@ export async function loadCampaignConfig(campaignId: string): Promise<CampaignCo
   return config as CampaignConfig;
 }
 
-// Save campaign configuration to JSON file (development only)
-export async function saveCampaignConfig(campaignId: string, config: CampaignConfig): Promise<void> {
-  console.log('💾 Saving config for:', campaignId, config.name);
+// Save campaign configuration to JSON file 
+export async function saveCampaignConfig(campaignId: string, config: CampaignConfig, isDemo: boolean = false): Promise<void> {
+  console.log('💾 Attempting to save config for:', campaignId, config.name);
+  
+  // Check if we're in demo mode (not authenticated)
+  if (isDemo) {
+    console.log('🚫 Demo mode detected - showing toast instead of saving');
+    
+    // Import and show toast notification dynamically
+    const { toast } = await import('sonner');
+    toast.info('Demo Mode - Changes Not Saved', {
+      description: 'Create an account to save settings and deploy your own donation portal.',
+      action: {
+        label: 'Sign Up',
+        onClick: () => window.open('/signup', '_blank')
+      },
+      duration: 60000,
+    });
+    
+    // Simulate a successful save for the UI (but don't actually persist)
+    await new Promise(resolve => setTimeout(resolve, 500));
+    console.log('✅ Demo mode - simulated save completed');
+    return;
+  }
   
   const response = await fetch(`/api/save-config/${campaignId}`, {
     method: 'POST',

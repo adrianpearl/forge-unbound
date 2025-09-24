@@ -1,11 +1,14 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { ThemeProvider } from 'next-themes';
 import { PrivacyPolicy } from './components/PrivacyPolicy';
 import { TermsOfService } from './components/TermsOfService';
 import { CampaignProvider } from './contexts/CampaignContext';
+import { AuthProvider } from './contexts/AuthContext';
 import { DonationAdmin } from './components/admin/DonationAdmin';
 import { DonationPage } from './components/pages/DonationPage';
 import { AlertTriangle, Code } from 'lucide-react';
+import { Toaster } from './components/ui/sonner';
 
 // Development mode banner component
 function DevBanner() {
@@ -47,17 +50,45 @@ function DevBanner() {
 // Main App component with routing
 function App() {
     return (
-        <CampaignProvider>
-            <Router>
-                <DevBanner />
-                <Routes>
-                    <Route path="/privacy" element={<PrivacyPolicy />} />
-                    <Route path="/terms" element={<TermsOfService />} />
-                    <Route path="/donate" element={<DonationPage />} />
-                    <Route path="/" element={<DonationAdmin />} />
-                </Routes>
-            </Router>
-        </CampaignProvider>
+        <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            enableSystem
+            disableTransitionOnChange
+        >
+            <AuthProvider>
+                <CampaignProvider>
+                    <Router>
+                        <DevBanner />
+                        <Routes>
+                            <Route path="/privacy" element={<PrivacyPolicy />} />
+                            <Route path="/terms" element={<TermsOfService />} />
+                            <Route path="/donate" element={<DonationPage />} />
+                            <Route path="/" element={<DonationAdmin />} />
+                        </Routes>
+                        <Toaster 
+                            position="top-right"
+                            toastOptions={{
+                                duration: 6000,
+                                style: {
+                                    background: 'white',
+                                    color: '#1f2937',
+                                    border: '1px solid #d1d5db',
+                                    boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+                                    fontSize: '14px',
+                                    fontWeight: '500',
+                                },
+                                classNames: {
+                                    description: 'text-gray-700 font-medium',
+                                    toast: 'bg-white text-gray-900 border-gray-300',
+                                    actionButton: 'bg-blue-600 text-white font-medium hover:bg-blue-700',
+                                },
+                            }}
+                        />
+                    </Router>
+                </CampaignProvider>
+            </AuthProvider>
+        </ThemeProvider>
     );
 }
 

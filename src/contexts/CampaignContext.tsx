@@ -1,5 +1,6 @@
 import React, { createContext, useContext, ReactNode, useEffect, useState } from 'react';
 import { CampaignConfig, parseCampaignConfig, loadCampaignConfig, saveCampaignConfig } from '../types/campaign';
+import { useAuth } from './AuthContext';
 
 // Utility function to determine if a color is light or dark (for contrast)
 function isLightColor(hex: string): boolean {
@@ -32,6 +33,7 @@ interface CampaignProviderProps {
 }
 
 export function CampaignProvider({ children, config, campaignId }: CampaignProviderProps) {
+  const { isDemo } = useAuth();
   const [campaignConfig, setCampaignConfig] = useState<CampaignConfig | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -39,6 +41,16 @@ export function CampaignProvider({ children, config, campaignId }: CampaignProvi
   
   const updateConfig = (newConfig: CampaignConfig) => {
     setCampaignConfig(newConfig);
+    
+    // In demo mode, store config changes in sessionStorage for preview snapshots
+    if (isDemo && currentCampaignId) {
+      try {
+        sessionStorage.setItem(`demo-config-${currentCampaignId}`, JSON.stringify(newConfig));
+        console.log('💾 Demo config stored for preview snapshots');
+      } catch (error) {
+        console.warn('Failed to store demo config:', error);
+      }
+    }
     
     // Update HTML meta tags dynamically
     if (newConfig.pageTitle) {
@@ -105,7 +117,24 @@ export function CampaignProvider({ children, config, campaignId }: CampaignProvi
     
     console.log('Loading campaign config for:', targetCampaignId);
     
-    // Load the campaign config
+    // In demo mode, check for demo config in sessionStorage first
+    if (isDemo) {
+      try {
+        const demoConfigStr = sessionStorage.getItem(`demo-config-${targetCampaignId}`);
+        if (demoConfigStr) {
+          const demoConfig = JSON.parse(demoConfigStr);
+          console.log('🎭 Found demo config in session storage:', demoConfig.name);
+          updateConfig(demoConfig);
+          setLoading(false);
+          return;
+        }
+      } catch (error) {
+        console.warn('Failed to load demo config from storage:', error);
+        // Fall through to load from server
+      }
+    }
+    
+    // Load the campaign config from server
     setLoading(true);
     loadCampaignConfig(targetCampaignId)
       .then(config => {
@@ -126,8 +155,8 @@ export function CampaignProvider({ children, config, campaignId }: CampaignProvi
       throw new Error('No campaign ID available for saving');
     }
     
-    await saveCampaignConfig(currentCampaignId, newConfig);
-    // Update the local state after successful save
+    await saveCampaignConfig(currentCampaignId, newConfig, isDemo);
+    // Update the local state after successful save (even in demo mode for real-time preview)
     updateConfig(newConfig);
   };
 
