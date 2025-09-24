@@ -1,21 +1,48 @@
 import React, { useEffect, useRef, useState } from 'react';
+import ReactMarkdown from 'react-markdown';
+import { useSearchParams } from 'react-router-dom';
 import { DonorInfo } from './DonorInfo';
 import { AmountSelector } from './AmountSelector';
 import { DonationType } from './DonationType';
 import { ProcessingFee } from './ProcessingFee';
+import { Footer } from './Footer';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, Mail, Heart, RotateCcw, CreditCard, Info } from 'lucide-react';
+import { useCampaign } from '@/contexts/CampaignContext';
 
-interface DonationWidgetProps {
-  initialAmount?: number;
+// Parse URL parameters for donation pre-filling
+function parseUrlParameters(searchParams: URLSearchParams) {
+  const amountParam = searchParams.get('amount');
+  
+  if (amountParam) {
+    const amountInCents = parseInt(amountParam);
+    const amountInDollars = amountInCents / 100;
+    
+    if (amountInCents > 0 && amountInDollars >= 1) {
+      console.log(`Pre-filling amount from URL: $${amountInDollars} (${amountInCents} cents)`);
+      return { initialAmount: amountInDollars };
+    } else {
+      console.warn(`Invalid amount parameter: ${amountParam}. Amount must be at least 100 cents ($1.00)`);
+    }
+  }
+  
+  return { initialAmount: 0 };
 }
 
-function DonationWidget({ initialAmount = 0 }: DonationWidgetProps) {
+interface DonationWidgetProps {
+  showFullPage?: boolean; // Controls whether to show full page content or just widget
+}
+
+function DonationWidget({ showFullPage = false }: DonationWidgetProps) {
+  const [searchParams] = useSearchParams();
+  const { initialAmount } = parseUrlParameters(searchParams);
+  
   const formRef = useRef(null);
   const cardElementRef = useRef(null);
   const [stripe, setStripe] = useState(null);
   const [elements, setElements] = useState(null);
   const cardRef = useRef(null);
+  const { config: campaign } = useCampaign();
   
   // Form state
   const [donationAmount, setDonationAmount] = useState(initialAmount);
@@ -291,7 +318,7 @@ function DonationWidget({ initialAmount = 0 }: DonationWidgetProps) {
     );
   }
 
-  return (
+  const widgetContent = (
     <div className="donation-widget space-y-6 max-w-2xl mx-auto py-6">
       {/* Amount Selection Section */}
       <AmountSelector 
@@ -446,6 +473,65 @@ function DonationWidget({ initialAmount = 0 }: DonationWidgetProps) {
             className="opacity-80 h-5" 
           />
         </div>
+      </div>
+    </div>
+  );
+  
+  // Full page version with logo, header, footer, etc.
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="donation-page max-w-xl mx-auto px-6">
+        <div className="logo max-w-64 my-4 mx-auto">
+          <a href={campaign.website}>
+            <img 
+              src={campaign.logoUrl} 
+              alt={campaign.logoAlt}
+              className="mx-auto"
+              onError={(e) => {
+                // Fallback for missing logo
+                e.currentTarget.style.display = 'none';
+              }}
+            />
+          </a>
+          <div className="w-full text-center text-xs">{campaign.tagline}</div>
+        </div>
+        <div className="page-header py-4">
+          <div className="prose prose-gray max-w-2xl">
+            <ReactMarkdown>{campaign.headerContent}</ReactMarkdown>
+          </div>
+        </div>
+        {widgetContent}
+        <footer className="text-left p-5 border-t border-border text-xs leading-relaxed text-foreground">
+          <div className="mb-5">
+            <h3 className="text-base font-bold mb-2.5">Contribution rules</h3>
+            <ul className="list-disc list-inside space-y-1.5 text-sm">
+              <li>I am a U.S. citizen or lawfully admitted permanent resident (i.e., green card holder).</li>
+              <li>This contribution is made from my own funds, and funds are not being provided to me by another person or entity for the purpose of making this contribution.</li>
+              <li>I am at least eighteen years old.</li>
+              <li>I am not a federal contractor.</li>
+              <li>I am making this contribution with my own personal credit card and not with a corporate or business credit card or a card issued to another person.</li>
+            </ul>
+          </div>
+
+          <div className="mb-4">
+            <p className="mb-2.5">
+              <strong>Federal Election Commission Disclaimer:</strong> By proceeding with this transaction, you agree to the contribution rules above. Contributions to political candidates are not tax-deductible for federal income tax purposes.
+            </p>
+          </div>
+
+          <div className="mb-4">
+            <p className="mb-2.5">
+              <strong>Platform Disclaimer:</strong> This donation platform is paid for by {campaign.legalName} and not authorized by any other candidate or candidate committee. For questions about donations, please contact <a href={`mailto:${campaign.contactEmail}`}>{campaign.contactEmail}</a>.
+            </p>
+          </div>
+
+          <div className="mb-5">
+            <p>
+              <strong>Contribution Limits:</strong> Federal law requires us to use our best efforts to collect and report the name, mailing address, occupation and name of employer of individuals whose contributions exceed $200 in a calendar year. The maximum amount an individual may contribute is $3,500 for the primary plus an additional $3,500 for the general election for a total of $7,000 per election.
+            </p>
+          </div>
+        </footer>
+        <Footer />
       </div>
     </div>
   );

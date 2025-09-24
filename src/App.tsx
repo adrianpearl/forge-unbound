@@ -3,15 +3,19 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import { PrivacyPolicy } from './components/PrivacyPolicy';
 import { TermsOfService } from './components/TermsOfService';
 import { CampaignProvider } from './contexts/CampaignContext';
-import { DonationPage } from './components/admin/DonationPage';
+import { DonationAdmin } from './components/admin/DonationAdmin';
+import { DonationPage } from './components/pages/DonationPage';
 import { AlertTriangle, Code } from 'lucide-react';
 
 // Development mode banner component
 function DevBanner() {
     const location = useLocation();
     
-    // Only show dev banner on donation pages, not on the main dashboard
-    if (location.pathname.startsWith('/admin') || location.pathname === '/') return null;
+    // Only show dev banner on public donation page (/donate), not on admin dashboard or utility pages
+    const isAdminDashboard = location.pathname === '/';
+    const isAdminRoute = location.pathname.startsWith('/admin');
+    const isUtilityRoute = location.pathname === '/privacy' || location.pathname === '/terms';
+    if (isAdminDashboard || isAdminRoute || isUtilityRoute) return null;
     
     // Only show in development mode
     const isDev = import.meta.env.DEV || window.location.hostname === 'localhost';
@@ -49,7 +53,8 @@ function App() {
                 <Routes>
                     <Route path="/privacy" element={<PrivacyPolicy />} />
                     <Route path="/terms" element={<TermsOfService />} />
-                    <Route path="/" element={<DonationPage />} />
+                    <Route path="/donate" element={<DonationPage />} />
+                    <Route path="/" element={<DonationAdmin />} />
                 </Routes>
             </Router>
         </CampaignProvider>

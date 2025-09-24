@@ -8,6 +8,7 @@ import {
   Palette,
   MessageSquare,
   Zap,
+  DollarSign
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -38,9 +39,9 @@ const data = {
   ],
   navMain: [
     {
-      title: "Preview",
+      title: "Donation Portal",
       url: "/",
-      icon: Eye,
+      icon: DollarSign,
       isActive: false,
       items: [],
     },
