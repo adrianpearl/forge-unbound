@@ -83,9 +83,31 @@ export function parseCampaignConfig(): CampaignConfig {
 // Load campaign configuration from JSON file
 export async function loadCampaignConfig(campaignId: string): Promise<CampaignConfig> {
   const response = await fetch(`/config/${campaignId}.json`);
+  
   if (!response.ok) {
     throw new Error(`Failed to load campaign config: ${response.status}`);
   }
+  
   const config = await response.json();
   return config as CampaignConfig;
+}
+
+// Save campaign configuration to JSON file (development only)
+export async function saveCampaignConfig(campaignId: string, config: CampaignConfig): Promise<void> {
+  console.log('💾 Saving config for:', campaignId, config.name);
+  
+  const response = await fetch(`/api/save-config/${campaignId}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(config)
+  });
+  
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || `Failed to save config: ${response.status}`);
+  }
+  
+  console.log('✅ Config saved successfully');
 }

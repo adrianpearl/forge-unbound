@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { ExternalLink } from 'lucide-react';
 
 export function DonationAdmin() {
-  const { config: campaign, updateConfig } = useCampaign();
+  const { config: campaign, saveConfig } = useCampaign();
   
   const headerActions = (
     <Button 
@@ -37,7 +37,7 @@ export function DonationAdmin() {
       <div className="max-w-4xl mx-auto px-6 pb-8">
         <CampaignConfigForm 
           initialConfig={campaign}
-          onConfigChange={updateConfig}
+          onConfigChange={saveConfig}
         />
       </div>
     </AdminLayout>

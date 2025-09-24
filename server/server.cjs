@@ -34,6 +34,43 @@ app.get('/api/stripe-key', (req, res) => {
     res.json({ publishableKey: stripeKey });
 });
 
+// Save config endpoint (development only)
+app.post('/api/save-config/:campaignId', (req, res) => {
+    if (!isDevelopment) {
+        return res.status(403).json({ error: 'Config saving only allowed in development' });
+    }
+    
+    try {
+        const { campaignId } = req.params;
+        const config = req.body;
+        
+        console.log('💾 Saving config for:', campaignId);
+        
+        // Validate config has required fields
+        if (!config.name || !config.fullName) {
+            return res.status(400).json({ error: 'Config missing required fields' });
+        }
+        
+        // Write config to file
+        const configPath = path.join(__dirname, '..', 'public', 'config', `${campaignId}.json`);
+        const configDir = path.dirname(configPath);
+        
+        // Ensure config directory exists
+        if (!fs.existsSync(configDir)) {
+            fs.mkdirSync(configDir, { recursive: true });
+        }
+        
+        fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+        
+        console.log('✅ Config saved successfully to:', configPath);
+        res.json({ success: true, message: 'Config saved successfully' });
+        
+    } catch (error) {
+        console.error('❌ Error saving config:', error);
+        res.status(500).json({ error: 'Failed to save config: ' + error.message });
+    }
+});
+
 // Production: Serve built React app
 if (!isDevelopment) {
     const distPath = path.join(__dirname, '..', 'dist');

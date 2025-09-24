@@ -12,13 +12,15 @@ import { Save, RotateCcw, Download, Upload } from 'lucide-react';
 
 interface CampaignConfigFormProps {
   initialConfig: CampaignConfig;
-  onConfigChange: (config: CampaignConfig) => void;
+  onConfigChange: (config: CampaignConfig) => Promise<void> | void;
   className?: string;
 }
 
 export function CampaignConfigForm({ initialConfig, onConfigChange, className = "" }: CampaignConfigFormProps) {
   const [config, setConfig] = useState<CampaignConfig>(initialConfig);
   const [isDirty, setIsDirty] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   // Update local state when initialConfig changes
   useEffect(() => {
@@ -32,9 +34,18 @@ export function CampaignConfigForm({ initialConfig, onConfigChange, className = 
     setIsDirty(true);
   };
 
-  const handleApply = () => {
-    onConfigChange(config);
-    setIsDirty(false);
+  const handleApply = async () => {
+    setIsSaving(true);
+    setSaveError(null);
+    try {
+      await onConfigChange(config);
+      setIsDirty(false);
+    } catch (error) {
+      console.error('Failed to save config:', error);
+      setSaveError(error instanceof Error ? error.message : 'Failed to save config');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleReset = () => {
@@ -109,9 +120,9 @@ export function CampaignConfigForm({ initialConfig, onConfigChange, className = 
             <RotateCcw className="w-4 h-4 mr-2" />
             Reset
           </Button>
-          <Button onClick={handleApply} disabled={!isDirty}>
+          <Button onClick={handleApply} disabled={!isDirty || isSaving}>
             <Save className="w-4 h-4 mr-2" />
-            Apply Changes
+            {isSaving ? 'Saving...' : 'Apply Changes'}
           </Button>
         </div>
       </div>
@@ -411,7 +422,15 @@ export function CampaignConfigForm({ initialConfig, onConfigChange, className = 
       {isDirty && (
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
           <p className="text-sm text-yellow-800">
-            <strong>Unsaved Changes:</strong> You have unsaved changes. Click "Apply Changes" to see them in the preview above.
+            <strong>Unsaved Changes:</strong> You have unsaved changes. Click "Apply Changes" to save them and see them in the preview.
+          </p>
+        </div>
+      )}
+      
+      {saveError && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <p className="text-sm text-red-800">
+            <strong>Save Failed:</strong> {saveError}
           </p>
         </div>
       )}

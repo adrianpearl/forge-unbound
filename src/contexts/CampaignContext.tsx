@@ -1,5 +1,5 @@
 import React, { createContext, useContext, ReactNode, useEffect, useState } from 'react';
-import { CampaignConfig, parseCampaignConfig, loadCampaignConfig } from '../types/campaign';
+import { CampaignConfig, parseCampaignConfig, loadCampaignConfig, saveCampaignConfig } from '../types/campaign';
 
 // Utility function to determine if a color is light or dark (for contrast)
 function isLightColor(hex: string): boolean {
@@ -20,6 +20,7 @@ function isLightColor(hex: string): boolean {
 interface CampaignContextType {
   config: CampaignConfig;
   updateConfig: (newConfig: CampaignConfig) => void;
+  saveConfig: (config: CampaignConfig) => Promise<void>;
 }
 
 const CampaignContext = createContext<CampaignContextType | undefined>(undefined);
@@ -34,6 +35,7 @@ export function CampaignProvider({ children, config, campaignId }: CampaignProvi
   const [campaignConfig, setCampaignConfig] = useState<CampaignConfig | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentCampaignId, setCurrentCampaignId] = useState<string | null>(null);
   
   const updateConfig = (newConfig: CampaignConfig) => {
     setCampaignConfig(newConfig);
@@ -99,6 +101,7 @@ export function CampaignProvider({ children, config, campaignId }: CampaignProvi
 
     // Determine which campaign config to load
     let targetCampaignId = campaignId || 'sarah-johnson';
+    setCurrentCampaignId(targetCampaignId);
     
     console.log('Loading campaign config for:', targetCampaignId);
     
@@ -117,6 +120,16 @@ export function CampaignProvider({ children, config, campaignId }: CampaignProvi
         setLoading(false);
       });
   }, [config, campaignId]);
+  
+  const saveConfig = async (newConfig: CampaignConfig) => {
+    if (!currentCampaignId) {
+      throw new Error('No campaign ID available for saving');
+    }
+    
+    await saveCampaignConfig(currentCampaignId, newConfig);
+    // Update the local state after successful save
+    updateConfig(newConfig);
+  };
 
   if (loading) {
     return <div>Loading campaign...</div>;
@@ -127,7 +140,7 @@ export function CampaignProvider({ children, config, campaignId }: CampaignProvi
   }
   
   return (
-    <CampaignContext.Provider value={{ config: campaignConfig, updateConfig }}>
+    <CampaignContext.Provider value={{ config: campaignConfig, updateConfig, saveConfig }}>
       {children}
     </CampaignContext.Provider>
   );

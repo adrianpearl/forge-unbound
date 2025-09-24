@@ -4,7 +4,7 @@ import * as React from "react"
 import {
   Landmark,
   DollarSign,
-  ChartBar
+  FileChartColumn
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -42,9 +42,9 @@ const data = {
       items: [],
     },
     {
-      title: "Donor Analytics",
+      title: "Analytics & Reporting",
       url: "/",
-      icon: ChartBar,
+      icon: FileChartColumn,
       isActive: false,
       items: [],
     },

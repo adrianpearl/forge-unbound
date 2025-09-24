@@ -2,32 +2,34 @@
   "name": "Sarah Johnson",
   "fullName": "Sarah Johnson for Senate",
   "tagline": "DevinCook at en.wikipedia, Public domain, via Wikimedia Commons",
-  "headerContent": "# This is your future campaign donation portal.\n\nConfigure your donation page below.\n\nContinue to production to deploy your page.\n\nReturn to this preview page at any time.",
+  "headerContent": "# This is your future campaign donation portal.\n\n1. Configure your donation page below.\n2. Continue to production to deploy your page.\n3. Return to this preview page at any time.",
   "website": "https://commons.wikimedia.org/wiki/File:John_Shaw_Flag_(Red_First).svg",
   "contactEmail": "hello@sarahjohnsonforsenate.com",
-  
   "address": "4500 Democracy Boulevard",
   "city": "Springfield",
   "state": "IL",
   "zipCode": "62701",
-  
   "logoUrl": "https://upload.wikimedia.org/wikipedia/commons/6/67/John_Shaw_Flag_%28Red_First%29.svg",
   "logoAlt": "Sarah Johnson for Senate",
-  "faviconUrl": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗳️</text></svg>",
+  "faviconUrl": "data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><text y=\".9em\" font-size=\"90\">🗳️</text></svg>",
   "primaryColor": "#1e40af",
   "secondaryColor": "#1e3a8a",
-  
   "pageTitle": "Donate | Sarah Johnson for Senate",
-  "metaDescription": "Join Sarah Johnson's fight for working families - donate today",
-  
+  "metaDescription": "Join Sarah Johnson\"s fight for working families - donate today",
   "legalName": "Sarah Johnson for Senate Committee",
   "fecId": "C00789012",
   "privacyOfficer": "Campaign Privacy Officer",
   "privacyOfficerEmail": "privacy@sarahjohnsonforsenate.com",
-  
-  "defaultAmounts": [15, 35, 75, 150, 350, 750, 2900],
+  "defaultAmounts": [
+    15,
+    35,
+    75,
+    150,
+    350,
+    750,
+    2900
+  ],
   "maxContribution": 2900,
-  
   "customFooterText": "Join our grassroots movement to bring real change to Washington. Every dollar helps us reach more voters and build the coalition we need to win.",
-  "donationSuccessMessage": "Thank you for standing with Sarah! Together, we're building a campaign that puts working families first."
+  "donationSuccessMessage": "Thank you for standing with Sarah! Together, we are building a campaign that puts working families first."
 }
