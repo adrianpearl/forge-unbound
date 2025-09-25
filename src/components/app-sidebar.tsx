@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { useLocation } from "react-router-dom"
 import {
   Landmark,
   Vote,
@@ -20,7 +21,7 @@ import {
 } from "@/components/ui/sidebar"
 
 // Campaign admin dashboard data
-const data = {
+const baseData = {
   user: {
     name: "Campaign Admin",
     email: "admin@sarahjohnsonforsenate.com",
@@ -38,14 +39,12 @@ const data = {
       title: "Action Portals",
       url: "/",
       icon: Vote,
-      isActive: false,
       items: [],
     },
     {
       title: "Analytics & Reporting",
       url: "/analytics",
       icon: FileChartColumn,
-      isActive: false,
       badge: {
         text: "Coming",
         variant: "secondary"
@@ -57,17 +56,25 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const location = useLocation()
+  
+  // Add active state dynamically based on current route
+  const navMainWithActiveState = baseData.navMain.map(item => ({
+    ...item,
+    isActive: location.pathname === item.url
+  }))
+  
   return (
     <Sidebar collapsible="icon" className="admin-font" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <TeamSwitcher teams={baseData.teams} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        <NavMain items={navMainWithActiveState} />
+        <NavProjects projects={baseData.projects} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={baseData.user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
