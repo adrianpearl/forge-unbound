@@ -24,18 +24,18 @@ export function DonationType({ onTypeChange, selectedType = 'monthly' }: Donatio
       <RadioGroup
         value={donationType}
         onValueChange={handleTypeChange}
-        className="grid grid-cols-2 gap-3"
+        className="grid grid-cols-2 gap-2"
       >
         {/* Monthly Option */}
         <label
-          className={`donation-type-btn relative flex items-center justify-center px-4 py-2 border-2 rounded-lg cursor-pointer transition-all ${donationType === 'monthly'
+          className={`donation-type-btn relative flex items-center justify-center p-4 border-2 rounded-lg cursor-pointer transition-all ${donationType === 'monthly'
               ? 'border-campaign-primary bg-campaign-primary text-campaign-primary-foreground'
               : 'border-gray-200 hover:border-gray-300'
             }`}
         >
           <RadioGroupItem value="monthly" id="monthly" className="sr-only" />
           <div className="text-center">
-            <div className="font-medium">
+            <div className="font-semibold leading-none">
               Yes, count me in!
             </div>
           </div>
@@ -43,14 +43,14 @@ export function DonationType({ onTypeChange, selectedType = 'monthly' }: Donatio
 
         {/* One-time Option */}
         <label
-          className={`donation-type-btn relative flex items-center justify-center px-4 py-2 border-2 rounded-lg cursor-pointer transition-all ${donationType === 'one-time'
+          className={`donation-type-btn relative flex items-center justify-center p-4 border-2 rounded-lg cursor-pointer transition-all ${donationType === 'one-time'
               ? 'border-campaign-primary bg-campaign-primary text-campaign-primary-foreground'
               : 'border-gray-200 hover:border-gray-300'
             }`}
         >
           <RadioGroupItem value="one-time" id="one-time" className="sr-only" />
           <div className="text-center">
-            <div className="font-medium">
+            <div className="font-semibold leading-none">
               No, donate once
             </div>
           </div>

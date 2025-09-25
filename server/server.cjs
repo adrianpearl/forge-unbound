@@ -9,7 +9,7 @@ require('dotenv').config();
 
 // Read application info from package.json
 const packageInfo = require('../package.json');
-const APP_NAME = 'VegaDonationEngine';
+const APP_NAME = 'ForgeUnboundDonationEngine';
 const APP_VERSION = packageInfo.version;
 
 const app = express();

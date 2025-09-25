@@ -94,9 +94,9 @@ export function CampaignConfigForm({ initialConfig, onConfigChange, className = 
 
   return (
     <div className={`space-y-6 ${className}`}>
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <h3 className="text-lg font-semibold">Donation Portal Configuration</h3>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <input
             type="file"
             accept=".json"
@@ -108,21 +108,39 @@ export function CampaignConfigForm({ initialConfig, onConfigChange, className = 
             variant="outline"
             size="sm"
             onClick={() => document.getElementById('load-config')?.click()}
+            className="text-xs sm:text-sm"
           >
-            <Upload className="w-4 h-4 mr-2" />
-            Load
+            <Upload className="w-4 h-4 sm:mr-2" />
+            <span className="hidden sm:inline">Load</span>
           </Button>
-          <Button variant="outline" size="sm" onClick={handleSave}>
-            <Download className="w-4 h-4 mr-2" />
-            Save
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={handleSave}
+            className="text-xs sm:text-sm"
+          >
+            <Download className="w-4 h-4 sm:mr-2" />
+            <span className="hidden sm:inline">Save</span>
           </Button>
-          <Button variant="outline" size="sm" onClick={handleReset} disabled={!isDirty}>
-            <RotateCcw className="w-4 h-4 mr-2" />
-            Reset
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={handleReset} 
+            disabled={!isDirty}
+            className="text-xs sm:text-sm"
+          >
+            <RotateCcw className="w-4 h-4 sm:mr-2" />
+            <span className="hidden sm:inline">Reset</span>
           </Button>
-          <Button onClick={handleApply} disabled={!isDirty || isSaving}>
-            <Save className="w-4 h-4 mr-2" />
-            {isSaving ? 'Saving...' : 'Apply Changes'}
+          <Button 
+            onClick={handleApply} 
+            disabled={!isDirty || isSaving}
+            size="sm"
+            className="text-xs sm:text-sm flex-1 sm:flex-none"
+          >
+            <Save className="w-4 h-4 sm:mr-2" />
+            <span className="hidden sm:inline">{isSaving ? 'Saving...' : 'Apply Changes'}</span>
+            <span className="sm:hidden">{isSaving ? '...' : 'Apply'}</span>
           </Button>
         </div>
       </div>

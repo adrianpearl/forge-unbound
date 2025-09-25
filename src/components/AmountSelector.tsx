@@ -70,7 +70,7 @@ export function AmountSelector({ onAmountChange, selectedAmount, customAmount, i
             key={amount}
             type="button"
             variant={activeAmount === amount ? "campaign-selected" : "outline"}
-            className="h-12 text-sm font-medium"
+            className="h-12 text-base leading-none font-semibold"
             onClick={() => handlePresetClick(amount)}
           >
             ${amount === 1000 ? '1,000' : amount === 3500 ? '3,500' : amount}

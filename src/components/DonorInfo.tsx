@@ -99,155 +99,155 @@ export function DonorInfo({ onValidationChange }: DonorInfoProps) {
       <h3 className="text-lg font-semibold">Your Information</h3>
       <small className="text-muted-foreground">*All fields required unless otherwise noted.</small>
 
-      <div className="space-y-4">
+      <div className="space-y-3">
         {/* First Name / Last Name Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <Input
-            id="first-name"
-            name="firstName"
-            type="text"
-            placeholder="First Name"
-            autoComplete="given-name"
-            required
-            value={formData.firstName}
-            onChange={(e) => handleInputChange('firstName', e.target.value)}
-          />
-        </div>
-        <div>
-          <Input
-            id="last-name"
-            name="lastName"
-            type="text"
-            placeholder="Last Name"
-            autoComplete="family-name"
-            required
-            value={formData.lastName}
-            onChange={(e) => handleInputChange('lastName', e.target.value)}
-          />
-        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div>
+            <Input
+              id="first-name"
+              name="firstName"
+              type="text"
+              placeholder="First Name"
+              autoComplete="given-name"
+              required
+              value={formData.firstName}
+              onChange={(e) => handleInputChange('firstName', e.target.value)}
+            />
+          </div>
+          <div>
+            <Input
+              id="last-name"
+              name="lastName"
+              type="text"
+              placeholder="Last Name"
+              autoComplete="family-name"
+              required
+              value={formData.lastName}
+              onChange={(e) => handleInputChange('lastName', e.target.value)}
+            />
+          </div>
         </div>
 
         {/* Email / Phone Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <Input
-            id="email"
-            name="email"
-            type="email"
-            placeholder="Email"
-            autoComplete="email"
-            required
-            value={formData.email}
-            onChange={(e) => handleInputChange('email', e.target.value)}
-          />
-        </div>
-        <div>
-          <Input
-            id="phone"
-            name="phone"
-            type="tel"
-            placeholder="Phone (US or intnl)"
-            maxLength={20}
-            pattern="[0-9\-\(\)\+\s\.x,]{7,20}"
-            title="Phone number must be at least 7 digits (US or international format)"
-            autoComplete="tel"
-            required
-            value={formData.phone}
-            onChange={(e) => handleInputChange('phone', e.target.value)}
-          />
-        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div>
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="Email"
+              autoComplete="email"
+              required
+              value={formData.email}
+              onChange={(e) => handleInputChange('email', e.target.value)}
+            />
+          </div>
+          <div>
+            <Input
+              id="phone"
+              name="phone"
+              type="tel"
+              placeholder="Phone (US or intnl)"
+              maxLength={20}
+              pattern="[0-9\-\(\)\+\s\.x,]{7,20}"
+              title="Phone number must be at least 7 digits (US or international format)"
+              autoComplete="tel"
+              required
+              value={formData.phone}
+              onChange={(e) => handleInputChange('phone', e.target.value)}
+            />
+          </div>
         </div>
 
         {/* Address Row */}
-      <div>
-        <Input
-          id="address"
-          name="address"
-          type="text"
-          placeholder="Street address"
-          autoComplete="street-address"
-          required
-          value={formData.address}
-          onChange={(e) => handleInputChange('address', e.target.value)}
-        />
-      </div>
+        <div>
+          <Input
+            id="address"
+            name="address"
+            type="text"
+            placeholder="Street address"
+            autoComplete="street-address"
+            required
+            value={formData.address}
+            onChange={(e) => handleInputChange('address', e.target.value)}
+          />
+        </div>
 
         {/* City / State / ZIP Row */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div>
-          <Input
-            id="city"
-            name="city"
-            type="text"
-            placeholder="City"
-            autoComplete="address-level2"
-            required
-            value={formData.city}
-            onChange={(e) => handleInputChange('city', e.target.value)}
-          />
-        </div>
-        <div>
-          <select 
-            id="state"
-            name="state"
-            required
-            autoComplete="address-level1"
-            className="flex h-9 w-full rounded-md border border-input bg-white px-3 py-1 text-base shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
-            value={formData.state}
-            onChange={(e) => handleInputChange('state', e.target.value)}
-          >
-            <option value="">Select State</option>
-            {US_STATES.map((state) => (
-              <option key={state.value} value={state.value}>
-                {state.label}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <Input
-            id="zip"
-            name="zip"
-            type="text"
-            placeholder="ZIP Code"
-            pattern="\d{5}(-\d{4})?"
-            maxLength={10}
-            title="5-digit ZIP code or ZIP+4 format (12345 or 12345-6789)"
-            autoComplete="postal-code"
-            required
-            value={formData.zip}
-            onChange={(e) => handleInputChange('zip', e.target.value)}
-          />
-        </div>
+        <div className="grid grid-cols-4 gap-3">
+          <div>
+            <Input
+              id="zip"
+              name="zip"
+              type="text"
+              placeholder="ZIP Code"
+              pattern="\d{5}(-\d{4})?"
+              maxLength={10}
+              title="5-digit ZIP code or ZIP+4 format (12345 or 12345-6789)"
+              autoComplete="postal-code"
+              required
+              value={formData.zip}
+              onChange={(e) => handleInputChange('zip', e.target.value)}
+            />
+          </div>
+          <div className="col-span-2">
+            <Input
+              id="city"
+              name="city"
+              type="text"
+              placeholder="City"
+              autoComplete="address-level2"
+              required
+              value={formData.city}
+              onChange={(e) => handleInputChange('city', e.target.value)}
+            />
+          </div>
+          <div>
+            <select
+              id="state"
+              name="state"
+              required
+              autoComplete="address-level1"
+              className="flex h-10 w-full rounded-md border border-input bg-white px-3 py-1 text-base shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+              value={formData.state}
+              onChange={(e) => handleInputChange('state', e.target.value)}
+            >
+              <option value="">Select State</option>
+              {US_STATES.map((state) => (
+                <option key={state.value} value={state.value}>
+                  {state.label}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {/* Occupation / Employer Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <Input
-            id="occupation"
-            name="occupation"
-            type="text"
-            placeholder="Your occupation"
-            autoComplete="organization-title"
-            required
-            value={formData.occupation}
-            onChange={(e) => handleInputChange('occupation', e.target.value)}
-          />
-        </div>
-        <div>
-          <Input
-            id="employer"
-            name="employer"
-            type="text"
-            placeholder="Your employer"
-            autoComplete="organization"
-            required
-            value={formData.employer}
-            onChange={(e) => handleInputChange('employer', e.target.value)}
-          />
-        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div>
+            <Input
+              id="occupation"
+              name="occupation"
+              type="text"
+              placeholder="Your occupation"
+              autoComplete="organization-title"
+              required
+              value={formData.occupation}
+              onChange={(e) => handleInputChange('occupation', e.target.value)}
+            />
+          </div>
+          <div>
+            <Input
+              id="employer"
+              name="employer"
+              type="text"
+              placeholder="Your employer"
+              autoComplete="organization"
+              required
+              value={formData.employer}
+              onChange={(e) => handleInputChange('employer', e.target.value)}
+            />
+          </div>
         </div>
 
         {/* Comment (Optional) */}

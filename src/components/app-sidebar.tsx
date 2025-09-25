@@ -3,7 +3,7 @@
 import * as React from "react"
 import {
   Landmark,
-  DollarSign,
+  Vote,
   FileChartColumn
 } from "lucide-react"
 
@@ -35,9 +35,9 @@ const data = {
   ],
   navMain: [
     {
-      title: "Donation Portal",
+      title: "Action Portals",
       url: "/",
-      icon: DollarSign,
+      icon: Vote,
       isActive: false,
       items: [],
     },
