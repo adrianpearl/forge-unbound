@@ -6,6 +6,7 @@ import { TermsOfService } from './components/TermsOfService';
 import { CampaignProvider } from './contexts/CampaignContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { DonationAdmin } from './components/admin/DonationAdmin';
+import { AnalyticsAdmin } from './components/admin/AnalyticsAdmin';
 import { DonationPage } from './components/pages/DonationPage';
 import { AlertTriangle, Code } from 'lucide-react';
 import { Toaster } from './components/ui/sonner';
@@ -14,11 +15,10 @@ import { Toaster } from './components/ui/sonner';
 function DevBanner() {
     const location = useLocation();
     
-    // Only show dev banner on public donation page (/donate), not on admin dashboard or utility pages
-    const isAdminDashboard = location.pathname === '/';
-    const isAdminRoute = location.pathname.startsWith('/admin');
+    // Only show dev banner on public pages, not on admin pages
+    const isAdminPage = location.pathname === '/' || location.pathname === '/analytics';
     const isUtilityRoute = location.pathname === '/privacy' || location.pathname === '/terms';
-    if (isAdminDashboard || isAdminRoute || isUtilityRoute) return null;
+    if (isAdminPage || isUtilityRoute) return null;
     
     // Only show in development mode
     const isDev = import.meta.env.DEV || window.location.hostname === 'localhost';
@@ -64,6 +64,7 @@ function App() {
                             <Route path="/privacy" element={<PrivacyPolicy />} />
                             <Route path="/terms" element={<TermsOfService />} />
                             <Route path="/donate" element={<DonationPage />} />
+                            <Route path="/analytics" element={<AnalyticsAdmin />} />
                             <Route path="/" element={<DonationAdmin />} />
                         </Routes>
                         <Toaster 

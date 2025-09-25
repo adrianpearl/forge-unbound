@@ -43,7 +43,7 @@ const data = {
     },
     {
       title: "Analytics & Reporting",
-      url: "/",
+      url: "/analytics",
       icon: FileChartColumn,
       isActive: false,
       badge: {
