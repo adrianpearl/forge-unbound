@@ -71,7 +71,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={navMainWithActiveState} />
-        <NavProjects projects={baseData.projects} />
+        {false && <NavProjects projects={baseData.projects} />}
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={baseData.user} />

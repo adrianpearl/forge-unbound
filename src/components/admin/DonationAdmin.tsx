@@ -25,7 +25,7 @@ export function DonationAdmin() {
   return (
     <AdminLayout 
       pageTitle="Donation Portal"
-      breadcrumbs={[{ label: 'Donation Portal' }]}
+      breadcrumbs={[{ label: 'Action Portals' }]}
       headerActions={headerActions}
     >
       {/* Use the widget-only version within AdminLayout */}
