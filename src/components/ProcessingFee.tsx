@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useCampaignConfig } from '@/contexts/CampaignContext';
 
 interface ProcessingFeeProps {
   donationAmount: number;
@@ -8,6 +9,7 @@ interface ProcessingFeeProps {
 }
 
 export function ProcessingFee({ donationAmount, onFeeChange, initialChecked = true }: ProcessingFeeProps) {
+  const campaign = useCampaignConfig();
   const [coverProcessingFee, setCoverProcessingFee] = useState(initialChecked);
   const [processingFeeAmount, setProcessingFeeAmount] = useState(0);
   const [helpText, setHelpText] = useState('100% of your donation goes to the campaign');
@@ -16,7 +18,7 @@ export function ProcessingFee({ donationAmount, onFeeChange, initialChecked = tr
   // Stripe fee constants (typical rates: 2.9% + $0.30)
   const processingFeeRate = 0.029;
   const processingFeeFixed = 0.30;
-  const maxContributionAmount = 3500;
+  const maxContributionAmount = campaign.maxContribution;
 
   // Calculate what total amount needs to be charged to net a specific amount after Stripe fees
   const calculateTotalForDesiredNet = (desiredNetAmount: number): number => {
@@ -77,7 +79,7 @@ export function ProcessingFee({ donationAmount, onFeeChange, initialChecked = tr
     setHelpText(newHelpText);
     setIsDisabled(disabled);
     onFeeChange?.(feeAmount, coverProcessingFee);
-  }, [donationAmount, coverProcessingFee, onFeeChange]);
+  }, [donationAmount, coverProcessingFee, onFeeChange, maxContributionAmount]);
 
   const handleCheckboxChange = (checked: boolean) => {
     if (!isDisabled) {
