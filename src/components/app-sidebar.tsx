@@ -46,6 +46,10 @@ const data = {
       url: "/",
       icon: FileChartColumn,
       isActive: false,
+      badge: {
+        text: "Coming",
+        variant: "secondary"
+      },
       items: [],
     },
   ],
@@ -54,7 +58,7 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar collapsible="icon" className="admin-font" {...props}>
       <SidebarHeader>
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>

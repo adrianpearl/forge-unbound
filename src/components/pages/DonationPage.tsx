@@ -3,6 +3,8 @@ import DonationWidget from '@/components/DonationWidget';
 
 export function DonationPage() {
   return (
-    <DonationWidget showFullPage={true} />
+    <div className="public-font">
+      <DonationWidget showFullPage={true} />
+    </div>
   );
 }

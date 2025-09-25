@@ -29,7 +29,9 @@ export function DonationAdmin() {
       headerActions={headerActions}
     >
       {/* Use the widget-only version within AdminLayout */}
-      <DonationWidget showFullPage={false} />
+      <div className="public-font">
+        <DonationWidget showFullPage={false} />
+      </div>
       
       <Separator className="my-8" />
       

@@ -10,12 +10,29 @@ import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
+  SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
+
+// Helper function to get badge variant classes
+function getBadgeVariantClass(variant?: string) {
+  switch (variant) {
+    case 'success':
+      return 'bg-green-500 text-white'
+    case 'warning':
+      return 'bg-yellow-500 text-black'
+    case 'destructive':
+      return 'bg-red-500 text-white'
+    case 'secondary':
+      return 'bg-transparent text-sidebar-foreground/70 border border-sidebar-border'
+    default:
+      return 'bg-blue-500 text-white'
+  }
+}
 
 export function NavMain({
   items,
@@ -25,9 +42,17 @@ export function NavMain({
     url: string
     icon?: LucideIcon
     isActive?: boolean
+    badge?: {
+      text: string
+      variant?: 'default' | 'secondary' | 'success' | 'warning' | 'destructive'
+    }
     items?: {
       title: string
       url: string
+      badge?: {
+        text: string
+        variant?: 'default' | 'secondary' | 'success' | 'warning' | 'destructive'
+      }
     }[]
   }[]
 }) {
@@ -53,6 +78,11 @@ export function NavMain({
                       <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
+                  {item.badge && (
+                    <SidebarMenuBadge className={getBadgeVariantClass(item.badge.variant)}>
+                      {item.badge.text}
+                    </SidebarMenuBadge>
+                  )}
                   <CollapsibleContent>
                     <SidebarMenuSub>
                       {item.items?.map((subItem) => (
@@ -62,6 +92,11 @@ export function NavMain({
                               <span>{subItem.title}</span>
                             </Link>
                           </SidebarMenuSubButton>
+                          {subItem.badge && (
+                            <SidebarMenuBadge className={getBadgeVariantClass(subItem.badge.variant)}>
+                              {subItem.badge.text}
+                            </SidebarMenuBadge>
+                          )}
                         </SidebarMenuSubItem>
                       ))}
                     </SidebarMenuSub>
@@ -80,6 +115,11 @@ export function NavMain({
                   <span>{item.title}</span>
                 </Link>
               </SidebarMenuButton>
+              {item.badge && (
+                <SidebarMenuBadge className={getBadgeVariantClass(item.badge.variant)}>
+                  {item.badge.text}
+                </SidebarMenuBadge>
+              )}
             </SidebarMenuItem>
           )
         })}

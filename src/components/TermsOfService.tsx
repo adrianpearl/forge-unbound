@@ -8,7 +8,7 @@ import { useCampaignConfig } from '@/contexts/CampaignContext';
 export function TermsOfService() {
   const campaign = useCampaignConfig();
   return (
-    <div className="max-w-4xl mx-auto px-6 py-8">
+    <div className="max-w-4xl mx-auto px-6 py-8 public-font">
       {/* Logo */}
       <div className="text-center mb-8">
         <a href={campaign.website} className="inline-block">
