@@ -44,7 +44,7 @@ export function AdminLayout({ children, pageTitle = "Admin Dashboard", breadcrum
                 {breadcrumbs.map((breadcrumb, index) => (
                   <React.Fragment key={index}>
                     <BreadcrumbSeparator className="hidden md:block" />
-                    <BreadcrumbItem>
+                    <BreadcrumbItem className={index < breadcrumbs.length - 1 ? "hidden md:block" : ""}>
                       {breadcrumb.href ? (
                         <BreadcrumbLink href={breadcrumb.href}>
                           {breadcrumb.label}

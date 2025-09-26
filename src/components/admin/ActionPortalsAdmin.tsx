@@ -37,7 +37,7 @@ export function ActionPortalsAdmin() {
             <Button asChild size="lg" className="mb-6">
               <Link to="/donation-portal">
                 <Plus className="mr-2 h-4 w-4" />
-                Create New Donation Portal
+                New Donation Portal
               </Link>
             </Button>
             

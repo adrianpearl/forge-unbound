@@ -8,6 +8,8 @@ import { AuthProvider } from './contexts/AuthContext';
 import { DonationAdmin } from './components/admin/DonationAdmin';
 import { ActionPortalsAdmin } from './components/admin/ActionPortalsAdmin';
 import { AnalyticsAdmin } from './components/admin/AnalyticsAdmin';
+import { EmailCampaignsAdmin } from './components/admin/EmailCampaignsAdmin';
+import { VoterRegistrationAdmin } from './components/admin/VoterRegistrationAdmin';
 import { DonationPage } from './components/pages/DonationPage';
 import { InitialAnchorScroll } from './components/InitialAnchorScroll';
 import { AlertTriangle, Code } from 'lucide-react';
@@ -70,6 +72,8 @@ function App() {
                             <Route path="/terms" element={<TermsOfService />} />
                             <Route path="/donate" element={<DonationPage />} />
                             <Route path="/analytics" element={<AnalyticsAdmin />} />
+                            <Route path="/email-campaigns" element={<EmailCampaignsAdmin />} />
+                            <Route path="/voter-registration-lookup" element={<VoterRegistrationAdmin />} />
                             <Route path="/action-portals" element={<ActionPortalsAdmin />} />
                             <Route path="/donation-portal" element={<DonationAdmin />} />
                             <Route path="/" element={<Navigate to="/donation-portal" replace />} />

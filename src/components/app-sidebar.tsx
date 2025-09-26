@@ -6,6 +6,8 @@ import {
   Landmark,
   Vote,
   FileChartColumn,
+  Mails,
+  FolderSearch,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -50,6 +52,26 @@ const baseData = {
       title: "Analytics & Reporting",
       url: "/analytics",
       icon: FileChartColumn,
+      badge: {
+        text: "Coming",
+        variant: "secondary"
+      },
+      items: [],
+    },
+    {
+      title: "Email Campaigns",
+      url: "/email-campaigns",
+      icon: Mails,
+      badge: {
+        text: "Coming",
+        variant: "secondary"
+      },
+      items: [],
+    },
+    {
+      title: "Voter Lookup",
+      url: "/voter-registration-lookup",
+      icon: FolderSearch,
       badge: {
         text: "Coming",
         variant: "secondary"
