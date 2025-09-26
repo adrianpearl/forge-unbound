@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Separator } from '@/components/ui/separator';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { ColorPicker } from '@/components/ui/color-picker';
-import { Save, RotateCcw, Download, Upload } from 'lucide-react';
+import { Save, RotateCcw, Download, Upload, Link } from 'lucide-react';
 
 interface CampaignConfigFormProps {
   initialConfig: CampaignConfig;
@@ -93,9 +93,12 @@ export function CampaignConfigForm({ initialConfig, onConfigChange, className = 
   };
 
   return (
-    <div className={`space-y-6 ${className}`}>
+<div className={`space-y-6 ${className}`} id="donation-config">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <h3 className="text-lg font-semibold">Donation Portal Configuration</h3>
+        <h2 className="text-3xl font-medium space-x-2">
+          <span>Configuration</span>
+          <a href='/#donation-config'><Link className="inline size-5 text-blue-500 hover:text-blue-700" /></a>
+        </h2>
         <div className="flex flex-wrap gap-2">
           <input
             type="file"

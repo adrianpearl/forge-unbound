@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { useSearchParams } from 'react-router-dom';
+import { AnchorLink } from '@/components/AnchorLink';
 import { DonorInfo } from './DonorInfo';
 import { AmountSelector } from './AmountSelector';
 import { DonationType } from './DonationType';
@@ -497,7 +498,24 @@ function DonationWidget({ showFullPage = false }: DonationWidgetProps) {
         </div>
         <div className="page-header py-4">
           <div className="prose prose-gray max-w-2xl">
-            <ReactMarkdown>{campaign.headerContent}</ReactMarkdown>
+            <ReactMarkdown
+              components={{
+                a: ({ href, children, ...props }) => {
+                  // Check if it's an anchor link (starts with # or contains #)
+                  if (href && (href.startsWith('#') || href.includes('#'))) {
+                    return (
+                      <AnchorLink href={href} {...props}>
+                        {children}
+                      </AnchorLink>
+                    );
+                  }
+                  // Regular external/internal links
+                  return <a href={href} {...props}>{children}</a>;
+                },
+              }}
+            >
+              {campaign.headerContent}
+            </ReactMarkdown>
           </div>
         </div>
         {widgetContent}

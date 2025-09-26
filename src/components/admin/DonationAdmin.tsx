@@ -29,7 +29,7 @@ export function DonationAdmin() {
       headerActions={headerActions}
     >
       {/* Use the widget-only version within AdminLayout */}
-      <div className="public-font">
+      <div className="public-facing">
         <DonationWidget showFullPage={false} />
       </div>
       

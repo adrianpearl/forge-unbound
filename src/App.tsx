@@ -8,6 +8,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { DonationAdmin } from './components/admin/DonationAdmin';
 import { AnalyticsAdmin } from './components/admin/AnalyticsAdmin';
 import { DonationPage } from './components/pages/DonationPage';
+import { InitialAnchorScroll } from './components/InitialAnchorScroll';
 import { AlertTriangle, Code } from 'lucide-react';
 import { Toaster } from './components/ui/sonner';
 
@@ -59,6 +60,7 @@ function App() {
             <AuthProvider>
                 <CampaignProvider>
                     <Router>
+                        <InitialAnchorScroll />
                         <DevBanner />
                         <Routes>
                             <Route path="/privacy" element={<PrivacyPolicy />} />

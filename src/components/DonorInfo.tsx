@@ -99,9 +99,9 @@ export function DonorInfo({ onValidationChange }: DonorInfoProps) {
       <h3 className="text-lg font-semibold">Your Information</h3>
       <small className="text-muted-foreground">*All fields required unless otherwise noted.</small>
 
-      <div className="space-y-3">
+      <div className="space-y-2">
         {/* First Name / Last Name Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-2">
           <div>
             <Input
               id="first-name"
@@ -129,7 +129,7 @@ export function DonorInfo({ onValidationChange }: DonorInfoProps) {
         </div>
 
         {/* Email / Phone Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           <div>
             <Input
               id="email"
@@ -174,13 +174,13 @@ export function DonorInfo({ onValidationChange }: DonorInfoProps) {
         </div>
 
         {/* City / State / ZIP Row */}
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-4 gap-2">
           <div>
             <Input
               id="zip"
               name="zip"
               type="text"
-              placeholder="ZIP Code"
+              placeholder="ZIP"
               pattern="\d{5}(-\d{4})?"
               maxLength={10}
               title="5-digit ZIP code or ZIP+4 format (12345 or 12345-6789)"
@@ -188,6 +188,7 @@ export function DonorInfo({ onValidationChange }: DonorInfoProps) {
               required
               value={formData.zip}
               onChange={(e) => handleInputChange('zip', e.target.value)}
+              className="bg-white"
             />
           </div>
           <div className="col-span-2">
@@ -208,11 +209,11 @@ export function DonorInfo({ onValidationChange }: DonorInfoProps) {
               name="state"
               required
               autoComplete="address-level1"
-              className="flex h-10 w-full rounded-md border border-input bg-white px-3 py-1 text-base shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex h-10 w-full rounded-md border border-input bg-white px-3 py-1 text-base transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
               value={formData.state}
               onChange={(e) => handleInputChange('state', e.target.value)}
             >
-              <option value="">Select State</option>
+              <option value="">State</option>
               {US_STATES.map((state) => (
                 <option key={state.value} value={state.value}>
                   {state.label}
@@ -223,7 +224,7 @@ export function DonorInfo({ onValidationChange }: DonorInfoProps) {
         </div>
 
         {/* Occupation / Employer Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           <div>
             <Input
               id="occupation"

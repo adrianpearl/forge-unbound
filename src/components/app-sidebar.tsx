@@ -5,7 +5,7 @@ import { useLocation } from "react-router-dom"
 import {
   Landmark,
   Vote,
-  FileChartColumn
+  FileChartColumn,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
