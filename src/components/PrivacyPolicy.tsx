@@ -7,6 +7,10 @@ import { useCampaignConfig } from '@/contexts/CampaignContext';
 
 export function PrivacyPolicy() {
   const campaign = useCampaignConfig();
+  
+  // Set the document title
+  document.title = `Privacy Policy | ${campaign.fullName}`;
+  
   return (
     <div className="max-w-4xl mx-auto px-6 py-8 public-facing">
       {/* Logo */}

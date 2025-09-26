@@ -29,7 +29,7 @@ const baseData = {
   },
   teams: [
     {
-      name: "Campaign Admin",
+      name: "Johnson for Senate",
       logo: Landmark,
       plan: "Pro",
     },
@@ -37,9 +37,14 @@ const baseData = {
   navMain: [
     {
       title: "Action Portals",
-      url: "/",
+      url: "/action-portals",
       icon: Vote,
-      items: [],
+      items: [
+        {
+          title: "New Donation Portal",
+          url: "/donation-portal",
+        },
+      ],
     },
     {
       title: "Analytics & Reporting",
@@ -59,10 +64,23 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const location = useLocation()
   
   // Add active state dynamically based on current route
-  const navMainWithActiveState = baseData.navMain.map(item => ({
-    ...item,
-    isActive: location.pathname === item.url
-  }))
+  const navMainWithActiveState = baseData.navMain.map(item => {
+    // Check if current path matches this item directly (not subitems)
+    const isDirectMatch = location.pathname === item.url
+    const hasActiveSubitem = item.items?.some(subItem => location.pathname === subItem.url)
+    
+    return {
+      ...item,
+      // Only highlight parent if it's a direct match, not if a subitem is active
+      isActive: isDirectMatch,
+      // Keep menu open if parent is active OR if a subitem is active
+      defaultOpen: isDirectMatch || hasActiveSubitem,
+      items: item.items?.map(subItem => ({
+        ...subItem,
+        isActive: location.pathname === subItem.url
+      }))
+    }
+  })
   
   return (
     <Sidebar collapsible="icon" className="admin-font" {...props}>

@@ -23,6 +23,9 @@ interface AdminLayoutProps {
 }
 
 export function AdminLayout({ children, pageTitle = "Admin Dashboard", breadcrumbs = [], headerActions }: AdminLayoutProps) {
+  // Set the document title
+  document.title = `${pageTitle} | ForgeUnbound`;
+  
   return (
     <SidebarProvider>
       <AppSidebar />

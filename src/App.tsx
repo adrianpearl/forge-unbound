@@ -1,11 +1,12 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { ThemeProvider } from 'next-themes';
 import { PrivacyPolicy } from './components/PrivacyPolicy';
 import { TermsOfService } from './components/TermsOfService';
 import { CampaignProvider } from './contexts/CampaignContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { DonationAdmin } from './components/admin/DonationAdmin';
+import { ActionPortalsAdmin } from './components/admin/ActionPortalsAdmin';
 import { AnalyticsAdmin } from './components/admin/AnalyticsAdmin';
 import { DonationPage } from './components/pages/DonationPage';
 import { InitialAnchorScroll } from './components/InitialAnchorScroll';
@@ -17,9 +18,11 @@ function DevBanner() {
     const location = useLocation();
     
     // Only show dev banner on public pages, not on admin pages
-    const isAdminPage = location.pathname === '/' || location.pathname === '/analytics';
-    const isUtilityRoute = location.pathname === '/privacy' || location.pathname === '/terms';
-    if (isAdminPage || isUtilityRoute) return null;
+    const publicRoutes = ['/donate', '/privacy', '/terms'];
+    const utilityRoutes = ['/privacy', '/terms'];
+    const isPublicRoute = publicRoutes.includes(location.pathname);
+    const isUtilityRoute = utilityRoutes.includes(location.pathname);
+    if (!isPublicRoute || isUtilityRoute) return null;
     
     // Only show in development mode
     const isDev = import.meta.env.DEV || window.location.hostname === 'localhost';
@@ -67,7 +70,9 @@ function App() {
                             <Route path="/terms" element={<TermsOfService />} />
                             <Route path="/donate" element={<DonationPage />} />
                             <Route path="/analytics" element={<AnalyticsAdmin />} />
-                            <Route path="/" element={<DonationAdmin />} />
+                            <Route path="/action-portals" element={<ActionPortalsAdmin />} />
+                            <Route path="/donation-portal" element={<DonationAdmin />} />
+                            <Route path="/" element={<Navigate to="/donation-portal" replace />} />
                         </Routes>
                         <Toaster 
                             position="top-right"

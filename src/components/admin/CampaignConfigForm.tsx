@@ -95,9 +95,9 @@ export function CampaignConfigForm({ initialConfig, onConfigChange, className = 
   return (
 <div className={`space-y-6 ${className}`} id="donation-config">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <h2 className="text-3xl font-medium space-x-2">
+        <h2 className="text-2xl font-medium space-x-2">
           <span>Configuration</span>
-          <a href='/#donation-config'><Link className="inline size-5 text-blue-500 hover:text-blue-700" /></a>
+          <a href='/donation-portal#donation-config' className="relative top-[-2px]"><Link className="inline size-4 text-blue-500 hover:text-blue-700" /></a>
         </h2>
         <div className="flex flex-wrap gap-2">
           <input

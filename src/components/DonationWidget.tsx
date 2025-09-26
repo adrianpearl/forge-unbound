@@ -487,6 +487,7 @@ function DonationWidget({ showFullPage = false }: DonationWidgetProps) {
             <img 
               src={campaign.logoUrl} 
               alt={campaign.logoAlt}
+              title={campaign.tagline}
               className="mx-auto"
               onError={(e) => {
                 // Fallback for missing logo
@@ -494,7 +495,7 @@ function DonationWidget({ showFullPage = false }: DonationWidgetProps) {
               }}
             />
           </a>
-          <div className="w-full text-center text-xs">{campaign.tagline}</div>
+          <div className="hidden w-full text-center text-xs">{campaign.tagline}</div>
         </div>
         <div className="page-header py-4">
           <div className="prose prose-gray max-w-2xl">
